@@ -44,7 +44,7 @@ If (!(Test-Path C:\Windows\Temp\netappStorage.loc)) {
 	echo "Lock." >> C:\Windows\Temp\netappStorage.loc
 	date >> $LogFile
 	echo "Start modConnectToStorageVM.PS1" >> $LogFile
-	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConnectToStorageVM.PS1' >> $LogFile
+	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConnectToStorageVM.ps1' >> $LogFile
 	date >> $LogFile
 	echo "Stop modConnectToStorageVM.PS1" >> $LogFile
 

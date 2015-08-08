@@ -1,3 +1,5 @@
+# Main script running via host.ps1 on sql's machines
+
 $vmName=($env:computername).ToLower()
 $PlainPassword = "Qwerty12"
  $SecurePassword = (ConvertTo-SecureString $PlainPassword -AsPlainText -Force) 

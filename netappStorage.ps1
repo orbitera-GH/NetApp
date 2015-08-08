@@ -1,3 +1,5 @@
+# Mount NetApp storage and repair DNS settings past shutdown VM
+
 $LogFile = "C:\Windows\Panther\netappStorage.log"
 $vmName=($env:computername).ToLower()
 $l=0

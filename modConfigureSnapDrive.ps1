@@ -11,7 +11,7 @@
 #Global variables to be set for this script
 
 $sqlserver = ($env:computername).ToLower()
-$LogFile = "C:\Windows\Panther\netappStorage.log"
+$LogFile = "C:\Windows\Panther\netappStorageConfigureSnapDrive.log"
 date >> $LogFile
 echo "modLunMapping start..." >> $LogFile
 switch -wildcard ($SqlServerName) { 

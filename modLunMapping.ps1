@@ -12,7 +12,7 @@
 #Global variables to be set per the storage virtual machine setting
 
 $SqlServerName = ($env:computername).ToLower()
-$LogFile = "C:\Windows\Panther\netappStorage.log"
+$LogFile = "C:\Windows\Panther\netappStorageLunMapping.log"
 date >> $LogFile
 echo "modLunMapping start..." >> $LogFile
 switch -wildcard ($SqlServerName) { 

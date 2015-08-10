@@ -11,7 +11,7 @@
 #############################################################################
 
 $SqlServerName = ($env:computername).ToLower()
-$LogFile = "C:\Windows\Panther\netappStorage.log"
+$LogFile = "C:\Windows\Panther\netappStorageRestoreVolume.log"
 $PermissionFile = "C:\Windows\Panther\AllowToDisconnectStorage.yes"
 
 date >> $LogFile

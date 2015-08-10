@@ -11,7 +11,7 @@
 
 #Assembly Imports
 
-$LogFile = "C:\Windows\Panther\netappStorage.log"
+$LogFile = "C:\Windows\Panther\netappStorageAttachDB.log"
 date >> $LogFile
 echo "modAttachSQLDatabase start..." >> $LogFile
 

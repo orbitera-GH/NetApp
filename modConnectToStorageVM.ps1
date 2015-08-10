@@ -13,7 +13,7 @@
 #set these variables per the storage virtual machine
 
 $SqlServerName = ($env:computername).ToLower()
-$LogFile = "C:\Windows\Panther\netappStorage.log"
+$LogFile = "C:\Windows\Panther\netappStorageConnectToStorage.log"
 date >> $LogFile
 echo "modConnectToStorage start..." >> $LogFile
 switch -wildcard ($SqlServerName) { 

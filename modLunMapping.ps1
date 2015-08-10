@@ -110,7 +110,8 @@ $verbose = $true #for debugging
 
 $secpasswd = ConvertTo-SecureString "Orbitera123!" -AsPlainText -Force
 $svmcreds = New-Object System.Management.Automation.PSCredential ("vsadmin", $secpasswd)			   
-
+Import-Module DataOnTap   
+connect-nccontroller $mgmtLIF -cred $svmcreds
 function PostEvent([String]$TextField, [string]$EventType)
 	{	# Subroutine to Post Events to Log/Screen/EventLog
 		$outfile = "C:\TestDriveSetup\netapp.log"

@@ -38,6 +38,10 @@ download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConfigu
 
 ## download end
 
+copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft SQL Server 2014\SQL Server 2014 Management Studio.lnk" "C:\Users\Public\Desktop\SQL Server 2014 Management Studio.lnk"
+copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapManager for SQL Server PowerShell.lnk" "C:\Users\Public\Desktop\SnapManager for SQL Server PowerShell.lnk"
+copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapManager for SQL Server Management Console.lnk" "C:\Users\Public\Desktop\SnapManager for SQL Server Management Console.lnk"
+
 ##netapp start
 	date >> $log
 	echo "### NetappStorageON registry and services set start." >> $log

@@ -46,31 +46,31 @@ If (!(Test-Path C:\Windows\Temp\netappStorage.loc)) {
 	echo "Lock." >> C:\Windows\Temp\netappStorage.loc
 	date >> $LogFile
 	echo "Start modConnectToStorageVM.PS1" >> $LogFile
-	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConnectToStorageVM.ps1' >> $LogFile
+	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConnectToStorageVM.ps1 ; C:\Windows\OEM\modLunMapping.ps1 ; C:\Windows\OEM\modAttachSQLDatabase.ps1 ; C:\Windows\OEM\modConfigureSnapDrive.ps1 ; C:\Windows\OEM\modConfigureSnapManager.ps1' >> $LogFile
 	date >> $LogFile
 	echo "Stop modConnectToStorageVM.PS1" >> $LogFile
 
 	date >> $LogFile
 	echo "Start modLunMapping.ps1" >> $LogFile
-	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modLunMapping.ps1' >> $LogFile
+	#C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modLunMapping.ps1' >> $LogFile
 	date >> $LogFile
 	echo "Stop modLunMapping.ps1" >> $LogFile
 
 	date >> $LogFile
 	echo "Start AttachSQLDatabase.PS1" >> $LogFile
-	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modAttachSQLDatabase.ps1' >> $LogFile
+	#C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modAttachSQLDatabase.ps1' >> $LogFile
 	date >> $LogFile
 	echo "Stop AttachSQLDatabase.PS1" >> $LogFile
 	
 	date >> $LogFile
 	echo "Start modConfigureSnapDrive.PS1" >> $LogFile
-	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConfigureSnapDrive.ps1' >> $LogFile
+	#C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConfigureSnapDrive.ps1' >> $LogFile
 	date >> $LogFile
 	echo "Stop modConfigureSnapDrive.PS1" >> $LogFile
 	
 	date >> $LogFile
 	echo "Start modConfigureSnapManager.PS1" >> $LogFile
-	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConfigureSnapManager.ps1' >> $LogFile
+	#C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConfigureSnapManager.ps1' >> $LogFile
 	date >> $LogFile
 	echo "Stop modConfigureSnapManager.PS1" >> $LogFile
 	

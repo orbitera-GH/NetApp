@@ -4,14 +4,14 @@
 # Script to connect to SVM from SQL Virtual Machine
 #
 # Author - Mudassar Shafique
-# Version - 1.1
-# Last Modified 08/04/2015
+# Version - 1.2
+# Last Modified 08/07/2015
 #
 #############################################################################
 
 
 #set these variables per the storage virtual machine
-Import-Module DataOnTap -ErrorAction SilentlyContinue
+
 $SqlServerName = ($env:computername).ToLower()
 $LogFile = "C:\Windows\Panther\netappStorage.log"
 date >> $LogFile
@@ -99,6 +99,8 @@ switch -wildcard ($SqlServerName) {
 		}
 		default {date >> $LogFile ; echo "### ERROR can't determine management LIF IP address for VMname: $SqlServerName"  >> $LogFile}
 	}
+
+
 #$dataLIF1 = "192.168.250.36"
 #$dataLIF2 = "192.168.250.37"
 #$mgmtLIF = "192.168.250.34"
@@ -112,12 +114,13 @@ $svmcreds = New-Object System.Management.Automation.PSCredential ("vsadmin", $se
 #Logging function
 function PostEvent([String]$TextField, [string]$EventType)
 	{	# Subroutine to Post Events to Log/Screen/EventLog
-		$outfile = "C:\TestDriveSetup\Logs\netapp.log"
+		$outfile = "C:\TestDriveSetup\netapp.log"
+        $outdir = "C:\TestDriveSetup"
         $LogTime = Get-Date -Format "MM-dd-yyyy_hh-mm-ss"
         	
-		if (! (test-path $OUTFILE))
+		if (! (test-path $outdir))
 		{	
-            $suppress = mkdir C:\TestDriveSetup\Logs
+            $suppress = mkdir C:\TestDriveSetup
 		}
 		
 		if (! (test-path HKLM:\SYSTEM\CurrentControlSet\Services\Eventlog\application\NetAppTestDrive) )
@@ -143,40 +146,75 @@ function PostEvent([String]$TextField, [string]$EventType)
 	}	
 
 
-PostEvent "Starting ConnectToStorageVM Script" "Information"
-
-#Initiator IQN
-$vmiqn = (get-initiatorPort).nodeaddress
-
-Import-Module DataOnTap
-
-connect-nccontroller $mgmtLIF -cred $svmcreds
-$iGroupList = Get-ncigroup
-$iGroupSetup = $False
-
-#Find if iGroup is already setup, add if not 
-foreach($igroup in $iGroupList)
+function CheckService([String]$ServiceName)
 {
-    if( $igroup.Name -eq $server)
-    {
-        $iGroupSetup = $True
-        PostEvent "Found $server iGroup is alerady setup on SvM" "Information"
-        break
+    
+    $arrService = Get-Service -Name $ServiceName
+    if ($arrService.Status -ne "Running"){
+        Start-Service $ServiceName
+        PostEvent "Starting  $ServiceName  service" "Information"
+    }
+    if ($arrService.Status -eq "running"){ 
+        PostEvent "$ServiceName service is already started" "Information"
     }
 }
-if($iGroupSetup -eq $False)
+
+
+try
 {
-    Add-NcIscsiService
-    new-ncigroup -name $server -Protocol iScSi -Type Windows    
-    Add-NcIgroupInitiator -name $server -Initiator $vmiqn
-    PostEvent "Setting up $server iGroup on SvM" "Information"
+    PostEvent "Starting ConnectToStorageVM Script" "Information"
+
+    CheckService("MSiSCSI")
+
+    #Initiator IQN
+    $vmiqn = (get-initiatorPort).nodeaddress
+
+    Import-Module DataOnTap
+
+    connect-nccontroller $mgmtLIF -cred $svmcreds
+    $iGroupList = Get-ncigroup
+    $iGroupSetup = $False
+
+    #Find if iGroup is already setup, add if not 
+    foreach($igroup in $iGroupList)
+    {
+        if ($igroup.Name -eq $server)   
+        {
+            foreach($initiator in $igroup.Initiators)
+            {
+                if($initiator.InitiatorName.Equals($vmiqn))
+                {
+                    $iGroupSetup = $True
+                    PostEvent "Found $server iGroup is alerady setup on SvM with IQN: $vmiqn" "Information"
+                    break
+                }
+            }
+        }
+    }
+    if($iGroupSetup -eq $False)
+    {
+    
+        if ((get-nciscsiservice).IsAvailable -ne "True") { Add-NcIscsiService }    
+        new-ncigroup -name $server -Protocol iScSi -Type Windows    
+        Add-NcIgroupInitiator -name $server -Initiator $vmiqn
+        PostEvent "Setting up $server iGroup on SvM" "Information"
+    }
+
+    New-IscsiTargetPortal -TargetPortalAddress $dataLIF1
+    $Tar = get-iscsitarget
+    connect-iscsitarget -NodeAddress $Tar.NodeAddress -IsMultiPathEnabled $True  -TargetPortalAddress $dataLIF1
+    connect-iscsitarget -NodeAddress $Tar.NodeAddress -IsMultiPathEnabled $True  -TargetPortalAddress $dataLIF2
+
+    PostEvent "ConnectToStorageVM Script finished" "Information"
+    exit 1
+
+}
+catch
+{
+     PostEvent "Error in ConnectToStorageVM Script" "Error"
+     PostEvent $_.exception "Error"
+     exit 0
 }
 
-New-IscsiTargetPortal -TargetPortalAddress $dataLIF1
-$Tar = get-iscsitarget
-connect-iscsitarget -NodeAddress $Tar.NodeAddress -IsMultiPathEnabled $True -IsPersistent $True -TargetPortalAddress $dataLIF1
-connect-iscsitarget -NodeAddress $Tar.NodeAddress -IsMultiPathEnabled $True -IsPersistent $True -TargetPortalAddress $dataLIF2
-
-PostEvent "ConnectToStorageVM Script finished" "Information"
 
 

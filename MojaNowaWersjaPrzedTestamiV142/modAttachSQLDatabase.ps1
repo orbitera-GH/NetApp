@@ -10,11 +10,10 @@
 #############################################################################
 
 #Assembly Imports
-
 $LogFile = "C:\Windows\Panther\netappStorage.log"
 date >> $LogFile
 echo "modAttachSQLDatabase start..." >> $LogFile
-
+Import-Module DataOnTap -ErrorAction SilentlyContinue
 [System.Reflection.Assembly]::LoadWithPartialName( 'Microsoft.SqlServer.SMO')| out-null
 [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.SMOExtended') | out-null
 [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.SQLWMIManagement') | out-null
@@ -31,13 +30,12 @@ $verbose = $true #for debugging
 #Logging function
 function PostEvent([String]$TextField, [string]$EventType)
 	{	# Subroutine to Post Events to Log/Screen/EventLog
-		$outfile = "C:\TestDriveSetup\netapp.log"
-        $outdir = "C:\TestDriveSetup"
+		$outfile = "C:\TestDriveSetup\Logs\netapp.log"
         $LogTime = Get-Date -Format "MM-dd-yyyy_hh-mm-ss"
         	
-		if (! (test-path $outdir))
+		if (! (test-path $OUTFILE))
 		{	
-            $suppress = mkdir C:\TestDriveSetup
+            $suppress = mkdir C:\TestDriveSetup\Logs
 		}
 		
 		if (! (test-path HKLM:\SYSTEM\CurrentControlSet\Services\Eventlog\application\NetAppTestDrive) )
@@ -64,51 +62,49 @@ function PostEvent([String]$TextField, [string]$EventType)
 
 PostEvent "Starting AttachSQLDatabase Script" "Information"
 
+$username = "SYSTEM"
+$acl = (Get-Item $datastr).GetAccessControl("Access")
+$accessrule = New-Object system.security.AccessControl.FileSystemAccessRule($username, "FullControl", "None", "None", "Allow")
+$acl.AddAccessRule($accessrule)
+set-acl -aclobject $acl $datastr
+$acl.SetOwner([System.Security.Principal.NTAccount] "SYSTEM")
+
+$username = "SYSTEM"
+$logstr = "H:\Adventureworks_log.ldf"
+$acl = (Get-Item $logstr).GetAccessControl("Access")
+$accessrule = New-Object system.security.AccessControl.FileSystemAccessRule($username, "FullControl", "None", "None", "Allow")
+$acl.AddAccessRule($accessrule)
+set-acl -aclobject $acl $logstr
+$acl.SetOwner([System.Security.Principal.NTAccount] "SYSTEM")
+
+PostEvent "Added permissions on data and log file for SYSTEM" "Information"
+
+$username = "Administrators"
+$acl = (Get-Item $datastr).GetAccessControl("Access")
+$accessrule = New-Object system.security.AccessControl.FileSystemAccessRule($username, "FullControl", "None", "None", "Allow")
+$acl.AddAccessRule($accessrule)
+set-acl -aclobject $acl $datastr
+$acl.SetOwner([System.Security.Principal.NTAccount] ".\Administrators")
+
+$username = "Administrators"
+$acl = (Get-Item $logstr).GetAccessControl("Access")
+$accessrule = New-Object system.security.AccessControl.FileSystemAccessRule($username, "FullControl", "None", "None", "Allow")
+$acl.AddAccessRule($accessrule)
+set-acl -aclobject $acl $logstr
+$acl.SetOwner([System.Security.Principal.NTAccount] ".\Administrators")
+
+PostEvent "Added permissions on data and log file for SYSTEM" "Information"
+
+
+
+$srv = new-object Microsoft.SqlServer.Management.Smo.Server("(local)")
+
+$sc = new-object System.Collections.Specialized.StringCollection
+$sc.Add($datastr)
+$sc.Add($logstr)
+
 try
 {
-
-    $username = "SYSTEM"
-    $acl = (Get-Item $datastr).GetAccessControl("Access")
-    $accessrule = New-Object system.security.AccessControl.FileSystemAccessRule($username, "FullControl", "None", "None", "Allow")
-    $acl.AddAccessRule($accessrule)
-    set-acl -aclobject $acl $datastr
-    $acl.SetOwner([System.Security.Principal.NTAccount] "SYSTEM")
-
-    $username = "SYSTEM"
-    $logstr = "H:\Adventureworks_log.ldf"
-    $acl = (Get-Item $logstr).GetAccessControl("Access")
-    $accessrule = New-Object system.security.AccessControl.FileSystemAccessRule($username, "FullControl", "None", "None", "Allow")
-    $acl.AddAccessRule($accessrule)
-    set-acl -aclobject $acl $logstr
-    $acl.SetOwner([System.Security.Principal.NTAccount] "SYSTEM")
-
-    PostEvent "Added permissions on data and log file for SYSTEM" "Information"
-
-    $username = "Administrators"
-    $acl = (Get-Item $datastr).GetAccessControl("Access")
-    $accessrule = New-Object system.security.AccessControl.FileSystemAccessRule($username, "FullControl", "None", "None", "Allow")
-    $acl.AddAccessRule($accessrule)
-    set-acl -aclobject $acl $datastr
-    $acl.SetOwner([System.Security.Principal.NTAccount] ".\Administrators")
-
-    $username = "Administrators"
-    $acl = (Get-Item $logstr).GetAccessControl("Access")
-    $accessrule = New-Object system.security.AccessControl.FileSystemAccessRule($username, "FullControl", "None", "None", "Allow")
-    $acl.AddAccessRule($accessrule)
-    set-acl -aclobject $acl $logstr
-    $acl.SetOwner([System.Security.Principal.NTAccount] ".\Administrators")
-
-    PostEvent "Added permissions on data and log file for SYSTEM" "Information"
-
-
-
-    $srv = new-object Microsoft.SqlServer.Management.Smo.Server("(local)")
-
-    $sc = new-object System.Collections.Specialized.StringCollection
-    $sc.Add($datastr)
-    $sc.Add($logstr)
-
-
     $srv.AttachDatabase("Adventureworks", $sc)
     PostEvent "Attached Adventureworks database" "Information"    
     #end try

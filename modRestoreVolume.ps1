@@ -5,25 +5,19 @@
 # Returns 1 if all volumes are successfully restored, 0 if restore is not successful
 #
 # Author - Mudassar Shafique
-# Version - 1.1
-# Last Modified 08/04/2015
+# Version - 1.2
+# Last Modified 08/07/2015
 #
 #############################################################################
 
-
-
-# Set these variables per each storage virtual machine
-
-Import-Module DataOnTap -ErrorAction SilentlyContinue
 $SqlServerName = ($env:computername).ToLower()
 $LogFile = "C:\Windows\Panther\netappStorage.log"
 $PermissionFile = "C:\Windows\Panther\AllowToDisconnectStorage.yes"
 
 date >> $LogFile
 echo "Starting script modRestoreVolume.ps1..." >> $LogFile
-	
-if (test-path $PermissionFile) {
-	date >> $LogFile
+
+date >> $LogFile
 	echo "File $PermissionFile was detected. Start  Netapp RestoreVolume procedure." >> $LogFile
 	switch -wildcard ($SqlServerName) { 
 			"*01" {
@@ -88,121 +82,127 @@ if (test-path $PermissionFile) {
 			}
 			default {date >> $LogFile ; echo "### ERROR can't determine management LIF IP address for VMname: $SqlServerName"  >> $LogFile}
 		}
-	#$mgmtLIF = "192.168.250.34"
-	#$server = "server142"
-	$secpasswd = ConvertTo-SecureString "Orbitera123!" -AsPlainText -Force
-	$svmcreds = New-Object System.Management.Automation.PSCredential ("vsadmin", $secpasswd)	
 
-	$datalun = "/vol/sql_data/data_lun_001"
-	$loglun = "/vol/sql_log/log_lun_001"
-	$snapinfolun = "/vol/sql_snapinfo/snapinfo_lun_001"
+# Set these variables per each storage virtual machine
+#$mgmtLIF = "192.168.250.34"
+#$server = "server142"
+$secpasswd = ConvertTo-SecureString "Orbitera123!" -AsPlainText -Force
+$svmcreds = New-Object System.Management.Automation.PSCredential ("vsadmin", $secpasswd)	
 
-	$verbose = $true #for debugging
-
-	#Function to write logs
-	function PostEvent([String]$TextField, [string]$EventType)
-		{	# Subroutine to Post Events to Log/Screen/EventLog
-			$outfile = "C:\TestDriveSetup\Logs\netapp.log"
-			$LogTime = Get-Date -Format "MM-dd-yyyy_hh-mm-ss"	
-			if (! (test-path $OUTFILE))
-			{	
-				$suppress = mkdir C:\TestDriveSetup\Logs
-			}
-			
-			if (! (test-path HKLM:\SYSTEM\CurrentControlSet\Services\Eventlog\application\NetAppTestDrive) )
-			{	New-Eventlog -LogName Application -source NetAppTestDrive
-				PostEvent "Creating Eventlog\Application\NetAppTestDrive Eventlog Source" "Warning"
-			}
-			else
-			{	switch -wildcard ($Eventtype)
-				{	"Info*" 	{ $color="gray" }
-					"Warn*"		{ $color="green" }
-					"Err*"		{ $color="yellow" }
-					"Cri*"		{ $color="red"
-								  $EventType="Error" }
-					default		{ $color="gray" }
-				}
-				if (!(!($verbose) -and ($EventType -eq "Information")))
-				{	write-host "- "$textfield -foregroundcolor $color
-					Write-Eventlog -LogName Application -Source NetAppTestDrive -EventID 1 -Message $TextField -EntryType $EventType -Computername "." -category 0
-					$textfieldwithtime = $LogTime +"-" +$textfield
-					$textfieldwithtime | out-file -filepath $outfile -append
-				}
-			}
-		}	
+$datalun = "/vol/sql_data/data_lun_001"
+$loglun = "/vol/sql_log/log_lun_001"
+$snapinfolun = "/vol/sql_snapinfo/snapinfo_lun_001"
 
 
-	PostEvent "Starting RestoreVolume Script" "Information"
+$verbose = $true #for debugging
 
-
-
-	Import-Module DataOnTap
-	connect-nccontroller $mgmtLIF -cred $svmcreds
-
-
-	try
-	{
-		 $lastModified = read-ncdirectory -path /vol/sql_data | where-object {$_.Name -eq "data_lun_001"} | Select-Object Modified
-
-		 restore-ncsnapshotvolume sql_data baseline -PreserveLunIds -Confirm:$false
-
-		 $NewModified = read-ncdirectory -path /vol/sql_data | where-object {$_.Name -eq "data_lun_001"} | Select-Object Modified
-
-		 if ($lastModified.Modified -eq $NewModified.Modified)
-		 {
-				PostEvent "Problem restoring sql_data volume" "Error"
-				exit 0 
-		 }
-
-		 $lastModified = read-ncdirectory -path /vol/sql_log | where-object {$_.Name -eq "log_lun_001"} | Select-Object Modified
-
-		 restore-ncsnapshotvolume sql_log baseline -PreserveLunIds -Confirm:$false
-
-		 $NewModified = read-ncdirectory -path /vol/sql_log | where-object {$_.Name -eq "log_lun_001"} | Select-Object Modified
-
-		 if ($lastModified.Modified -eq $NewModified.Modified)
-		 {
-				PostEvent "Problem restoring sql_log volume" "Error"
-				exit 0 
-		 }
-		 
-		 
-		 $lastModified = read-ncdirectory -path /vol/sql_snapinfo | where-object {$_.Name -eq "snapinfo_lun_001"} | Select-Object Modified
-		 
-		 restore-ncsnapshotvolume sql_snapinfo baseline -PreserveLunIds -Confirm:$false
-
-		 $NewModified = read-ncdirectory -path /vol/sql_snapinfo | where-object {$_.Name -eq "snapinfo_lun_001"} | Select-Object Modified
-
-		 if ($lastModified.Modified -eq $NewModified.Modified)
-		 {
-				PostEvent "Problem restoring sql_snapinfo volume" "Error"
-				exit 0 
-		 }
-
-		 PostEvent "All volumes successfully restored" "Information"
-
-		 
-		 #Remove Lun Maps
-
-		 remove-nclunmap $datalun $server -confirm:$false
-		 remove-nclunmap $loglun $server -confirm:$false
-		 remove-nclunmap $snapinfolun $server -confirm:$false
-
-		 PostEvent "Removed Lun Mapping" "Information"
-
-		 exit 1
-
-		#end try
-	}
-	catch
-	{
-		PostEvent $_.exception "Error"
+#Function to write logs
+function PostEvent([String]$TextField, [string]$EventType)
+	{	# Subroutine to Post Events to Log/Screen/EventLog
+		$outfile = "C:\TestDriveSetup\netapp.log"
+        $outdir = "C:\TestDriveSetup"
+        $LogTime = Get-Date -Format "MM-dd-yyyy_hh-mm-ss"	
+		if (! (test-path $outdir))
+		{	
+            $suppress = mkdir C:\TestDriveSetup
+		}
 		
-		exit 0
-		#end catch
-	}
-}else{
-	date >> $LogFile
-	echo "File $PermissionFile is not found. I made it now, to allow RestoreVolume at next shutdown VM" >> $LogFile
-	echo "Now we can restore volume." >> $PermissionFile
+		if (! (test-path HKLM:\SYSTEM\CurrentControlSet\Services\Eventlog\application\NetAppTestDrive) )
+		{	New-Eventlog -LogName Application -source NetAppTestDrive
+			PostEvent "Creating Eventlog\Application\NetAppTestDrive Eventlog Source" "Warning"
+		}
+		else
+		{	switch -wildcard ($Eventtype)
+			{	"Info*" 	{ $color="gray" }
+				"Warn*"		{ $color="green" }
+				"Err*"		{ $color="yellow" }
+				"Cri*"		{ $color="red"
+							  $EventType="Error" }
+				default		{ $color="gray" }
+			}
+			if (!(!($verbose) -and ($EventType -eq "Information")))
+			{	write-host "- "$textfield -foregroundcolor $color
+				Write-Eventlog -LogName Application -Source NetAppTestDrive -EventID 1 -Message $TextField -EntryType $EventType -Computername "." -category 0
+                $textfieldwithtime = $LogTime +"-" +$textfield
+				$textfieldwithtime | out-file -filepath $outfile -append
+			}
+		}
+	}	
+
+
+PostEvent "Starting RestoreVolume Script" "Information"
+
+
+
+Import-Module DataOnTap
+connect-nccontroller $mgmtLIF -cred $svmcreds
+
+
+try
+{
+     
+     PostEvent "Taking SnapDrive Volumes Offline and Removing" "Information"
+
+     get-ncvol | where {$_.Name -like "sdw*" } | set-ncvol -Offline
+     get-ncvol | where {$_.Name -like "sdw*" } | remove-ncvol -confirm:$false
+
+     $lastModified = read-ncdirectory -path /vol/sql_data | where-object {$_.Name -eq "data_lun_001"} | Select-Object Modified
+
+     restore-ncsnapshotvolume sql_data baseline -PreserveLunIds -Confirm:$false
+
+     $NewModified = read-ncdirectory -path /vol/sql_data | where-object {$_.Name -eq "data_lun_001"} | Select-Object Modified
+
+     if ($lastModified.Modified -eq $NewModified.Modified)
+     {
+            PostEvent "Problem restoring sql_data volume" "Error"
+            exit 0 
+     }
+
+     $lastModified = read-ncdirectory -path /vol/sql_log | where-object {$_.Name -eq "log_lun_001"} | Select-Object Modified
+
+     restore-ncsnapshotvolume sql_log baseline -PreserveLunIds -Confirm:$false
+
+     $NewModified = read-ncdirectory -path /vol/sql_log | where-object {$_.Name -eq "log_lun_001"} | Select-Object Modified
+
+     if ($lastModified.Modified -eq $NewModified.Modified)
+     {
+            PostEvent "Problem restoring sql_log volume" "Error"
+            exit 0 
+     }
+     
+     
+     $lastModified = read-ncdirectory -path /vol/sql_snapinfo | where-object {$_.Name -eq "snapinfo_lun_001"} | Select-Object Modified
+     
+     restore-ncsnapshotvolume sql_snapinfo baseline -PreserveLunIds -Confirm:$false
+
+     $NewModified = read-ncdirectory -path /vol/sql_snapinfo | where-object {$_.Name -eq "snapinfo_lun_001"} | Select-Object Modified
+
+     if ($lastModified.Modified -eq $NewModified.Modified)
+     {
+            PostEvent "Problem restoring sql_snapinfo volume" "Error"
+            exit 0 
+     }
+
+     PostEvent "All volumes successfully restored" "Information"
+
+     
+     #Remove Lun Maps
+
+     get-nclunmap | remove-nclunmap -Confirm:$false
+
+    
+
+     PostEvent "Removed Lun Mapping" "Information"
+
+     exit 1
+
+    #end try
 }
+catch
+{
+    PostEvent $_.exception "Error"
+    
+    exit 0
+    #end catch
+}
+

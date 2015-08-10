@@ -61,25 +61,12 @@ If (!(Test-Path C:\Windows\Temp\netappStorage.loc)) {
 	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modAttachSQLDatabase.ps1' >> $LogFile
 	date >> $LogFile
 	echo "Stop AttachSQLDatabase.PS1" >> $LogFile
-	
-	date >> $LogFile
-	echo "Start modConfigureSnapDrive.PS1" >> $LogFile
-	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConfigureSnapDrive.ps1' >> $LogFile
-	date >> $LogFile
-	echo "Stop modConfigureSnapDrive.PS1" >> $LogFile
-	
-	date >> $LogFile
-	echo "Start modConfigureSnapManager.PS1" >> $LogFile
-	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConfigureSnapManager.ps1' >> $LogFile
-	date >> $LogFile
-	echo "Stop modConfigureSnapManager.PS1" >> $LogFile
-	
 	while ($l -lt 3) {
 			date >> $LogFile
 			echo "Notify supervisor" >> $LogFile
 			$l++
 			(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
-			start-sleep -s 5
+			start-sleep -s 15
 		}
 }else{
 	date >> $LogFile
@@ -134,5 +121,3 @@ If (!(Test-Path C:\Windows\Temp\netappStorage.loc)) {
 	gpupdate.exe /force >> $LogFile
 	date >> $LogFile
 }
-date >> $LogFile
-echo "(netappStorage.ps1) End of script." >> $LogFile

@@ -10,7 +10,7 @@
 #############################################################################
 
 #Global variables to be set per the storage virtual machine setting
-
+Import-Module DataOnTap -ErrorAction SilentlyContinue
 $SqlServerName = ($env:computername).ToLower()
 $LogFile = "C:\Windows\Panther\netappStorage.log"
 date >> $LogFile
@@ -98,12 +98,10 @@ switch -wildcard ($SqlServerName) {
 		}
 		default {date >> $LogFile ; echo "### ERROR can't determine management LIF IP address for VMname: $SqlServerName"  >> $LogFile}
 	}
-
 #$dataLIF1 = "192.168.250.36"
 #$dataLIF2 = "192.168.250.37"
 #$mgmtLIF = "192.168.250.34"
 #$server = "server142"
-#$sqlserver = "sqltestdrive03b"
 
 
 $verbose = $true #for debugging
@@ -113,12 +111,12 @@ $svmcreds = New-Object System.Management.Automation.PSCredential ("vsadmin", $se
 
 function PostEvent([String]$TextField, [string]$EventType)
 	{	# Subroutine to Post Events to Log/Screen/EventLog
-		$outfile = "C:\TestDriveSetup\netapp.log"
+		$outfile = "C:\TestDriveSetup\Logs\netapp.log"
         $LogTime = Get-Date -Format "MM-dd-yyyy_hh-mm-ss"
         	
 		if (! (test-path $OUTFILE))
 		{	
-            $suppress = mkdir C:\TestDriveSetup
+            $suppress = mkdir C:\TestDriveSetup\Logs
 		}
 		
 		if (! (test-path HKLM:\SYSTEM\CurrentControlSet\Services\Eventlog\application\NetAppTestDrive) )
@@ -144,43 +142,34 @@ function PostEvent([String]$TextField, [string]$EventType)
 	}	
 
 
-
-try
-{
-    PostEvent "Starting LunMapping Script" "Information"
-    PostEvent "Mapping Luns on the Server" "Information"
-
-    add-nclunmap /vol/sql_data/data_lun_001 $server
-    add-nclunmap /vol/sql_log/log_lun_001 $server
-    add-nclunmap /vol/sql_snapinfo/snapinfo_lun_001 $server
-
-
-    Start-NcHostDiskRescan; Wait-NcHostDisk  -SettlingTime 5000
-    #Start-NcHostDiskRescan; Wait-NcHostDisk  -SettlingTime 5000
-    #Start-NcHostDiskRescan; Wait-NcHostDisk  -SettlingTime 5000
-
-    PostEvent "Disk Scan finished" "Information"
-
-
-    $DataDisk = (get-nchostdisk | Where-Object {$_.ControllerPath -like "*sql_data*"}).Disk
-    $LogDisk = (get-nchostdisk | Where-Object {$_.ControllerPath -like "*sql_log*"}).Disk
-    $SnapInfoDisk = (get-nchostdisk | Where-Object {$_.ControllerPath -like "*sql_snapinfo*"}).Disk
-
-    if (!(test-path "G:" )) { Add-PartitionAccessPath -DiskNumber $DataDisk -AccessPath G: -PartitionNumber 2 }
-    if (!(test-path "H:" )) { Add-PartitionAccessPath -DiskNumber $LogDisk -AccessPath H: -PartitionNumber 2 }
-    if (!(test-path "I:" )) { Add-PartitionAccessPath -DiskNumber $SnapInfoDisk -AccessPath I: -PartitionNumber 2 }
-
-    PostEvent "Assigned Drive Letters" "Information"
-
-
-    PostEvent "Finished LunMapping " "Information"
-
-    exit 1
-}
-catch
-{
-    PostEvent $_.exception "Error"
-    
-    exit 0
-}
 		   
+PostEvent "Starting LunMapping Script" "Information"
+PostEvent "Mapping Luns on the Server" "Information"
+
+add-nclunmap /vol/sql_data/data_lun_001 $server
+add-nclunmap /vol/sql_log/log_lun_001 $server
+add-nclunmap /vol/sql_snapinfo/snapinfo_lun_001 $server
+
+
+Start-NcHostDiskRescan; Wait-NcHostDisk  -SettlingTime 5000
+Start-NcHostDiskRescan; Wait-NcHostDisk  -SettlingTime 5000
+Start-NcHostDiskRescan; Wait-NcHostDisk  -SettlingTime 5000
+
+PostEvent "Disk Scan finished" "Information"
+
+
+$DataDisk = (get-nchostdisk | Where-Object {$_.ControllerPath -like "*sql_data*"}).Disk
+$LogDisk = (get-nchostdisk | Where-Object {$_.ControllerPath -like "*sql_log*"}).Disk
+$SnapInfoDisk = (get-nchostdisk | Where-Object {$_.ControllerPath -like "*sql_snapinfo*"}).Disk
+
+Add-PartitionAccessPath -DiskNumber $DataDisk -AccessPath G: -PartitionNumber 2
+Add-PartitionAccessPath -DiskNumber $LogDisk -AccessPath H: -PartitionNumber 2
+Add-PartitionAccessPath -DiskNumber $SnapInfoDisk -AccessPath I: -PartitionNumber 2
+
+PostEvent "Assigned Drive Letters" "Information"
+
+set-sdstorageConnectionSetting -StorageSystem $mgmtLIF -Credential $svmcreds
+
+PostEvent "Configured SnapDrive" "Information"
+
+PostEvent "Finished LunMapping " "Information"

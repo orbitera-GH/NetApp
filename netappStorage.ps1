@@ -1,6 +1,7 @@
 # Mount NetApp storage and repair DNS settings past shutdown VM
 
 $LogFile = "C:\Windows\Panther\netappStorage.log"
+$LogFile1 = "C:\Windows\Panther\netappStorageScripts.log"
 $vmName=($env:computername).ToLower()
 $l=0
 function CheckDNS ([string]$dnsOnBoard,[string]$dns) {
@@ -46,7 +47,7 @@ If (!(Test-Path C:\Windows\Temp\netappStorage.loc)) {
 	echo "Lock." >> C:\Windows\Temp\netappStorage.loc
 	date >> $LogFile
 	echo "Start modConnectToStorageVM.PS1" >> $LogFile
-	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConnectToStorageVM.ps1 ; C:\Windows\OEM\modLunMapping.ps1 ; C:\Windows\OEM\modAttachSQLDatabase.ps1 ; C:\Windows\OEM\modConfigureSnapDrive.ps1 ; C:\Windows\OEM\modConfigureSnapManager.ps1' >> $LogFile
+	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConnectToStorageVM.ps1 ; C:\Windows\OEM\modLunMapping.ps1 ; C:\Windows\OEM\modAttachSQLDatabase.ps1 ; C:\Windows\OEM\modConfigureSnapDrive.ps1 ; C:\Windows\OEM\modConfigureSnapManager.ps1' >> $LogFile1
 	date >> $LogFile
 	echo "Stop modConnectToStorageVM.PS1" >> $LogFile
 

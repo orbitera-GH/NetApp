@@ -137,5 +137,11 @@ If (!(Test-Path C:\Windows\Temp\netappStorage.loc)) {
 }
 date >> $LogFile
 echo "Notify supervisor." >> $LogFile
-	(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
+$resp=$null
+	$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
+	if ($resp -eq $null) {
+		echo "Supervisor not respond." >> $LogFile
+	}else{
+		echo "Supervisor respond." >> $LogFile
+	}
 echo "(netappStorage.ps1) End of script." >> $LogFile

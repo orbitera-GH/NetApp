@@ -76,10 +76,10 @@ If (!(Test-Path C:\Windows\Temp\netappStorage.loc)) {
 	echo "Stop modConfigureSnapManager.PS1" >> $LogFile
 	
 	#while ($l -lt 3) {
-			date >> $LogFile
-			echo "Notify supervisor" >> $LogFile
+	#		date >> $LogFile
+	#		echo "Notify supervisor first time and made lock file C:\Windows\Temp\netappStorage.loc" >> $LogFile
 	#		$l++
-			(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
+	#		(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
 	#		start-sleep -s 5
 	#	}
 }else{
@@ -136,4 +136,6 @@ If (!(Test-Path C:\Windows\Temp\netappStorage.loc)) {
 	date >> $LogFile
 }
 date >> $LogFile
+echo "Notify supervisor." >> $LogFile
+	(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
 echo "(netappStorage.ps1) End of script." >> $LogFile

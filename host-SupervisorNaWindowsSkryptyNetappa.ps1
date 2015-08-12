@@ -7,6 +7,7 @@ $UserName = "NETAPP\netappadmin"
  $Credentials = New-Object System.Management.Automation.PSCredential -ArgumentList $UserName, $SecurePassword
 $i=0
 $l=0
+$NetappServicePassword = "P@ssword1"
 $StorageAdmin = "$vmName\testdriveadmin"
 $StorageAdminPassword = "P@ssword1"
 $log="C:\Windows\Panther\bcd.log"
@@ -72,6 +73,47 @@ Write-Output "$domainControllerIP  netapp.prv" | Out-File -FilePath C:\Windows\S
 $nicIndex = Get-NetIPInterface -InterfaceAlias ethernet -AddressFamily ipv4 | select ifIndex -ExpandProperty ifIndex
 Set-DNSClientServerAddress –InterfaceIndex $nicIndex -ServerAddresses $domainControllerIP
 #DNS end
+# Change Netapp Servicess password
+
+date >> $log
+echo "Service: Data ONTAP VSS" >> $log
+$service = gwmi win32_service -filter "name='Navssprv'"
+$service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword) >> $log
+$service.StartService() >> $log
+start-sleep -s 3
+gwmi win32_service -filter "name='Navssprv'" >> $log
+
+echo "Service: SnapDrive" >> $log
+$service = gwmi win32_service -filter "name='SWSvc'"
+$service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword) >> $log
+$service.StartService() >> $log
+start-sleep -s 3
+gwmi win32_service -filter "name='SWSvc'" >> $log
+
+echo "Service: SnapDriveManagmentService" >> $log
+$service = gwmi win32_service -filter "name='SDMgmtSvc'"
+$service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword) >> $log
+$service.StartService() >> $log
+start-sleep -s 3
+gwmi win32_service -filter "name='SDMgmtSvc'" >> $log
+
+echo "Service: SnapDriveService" >> $log
+$service = gwmi win32_service -filter "name='SnapDriveService'"
+$service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword) >> $log
+$service.StartService() >> $log
+start-sleep -s 3
+gwmi win32_service -filter "name='SnapDriveService'" >> $log
+
+echo "Service: SnapManagerService" >> $log
+$service = gwmi win32_service -filter "name='SnapManagerService'"
+$service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword) >> $log
+$service.StartService() >> $log
+start-sleep -s 3
+gwmi win32_service -filter "name='SnapManagerService'" >> $log
+
+date >> $log
+echo "Change Netapp Servicess password END" >> $log
+
 
  Import-Module ServerManager -ErrorAction SilentlyContinue
  Import-Module ADDSDeployment -ErrorAction SilentlyContinue

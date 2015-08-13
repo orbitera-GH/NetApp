@@ -2,6 +2,7 @@
 
 $LogFile = "C:\Windows\Panther\netappStorage.log"
 $LogFile1 = "C:\Windows\Panther\netappStorageScripts.log"
+$supervisorDnsName = "supervisor1.testdrivesupervisor.eastus.cloudapp.azure.com"
 $vmName=($env:computername).ToLower()
 $l=0
 function CheckDNS ([string]$dnsOnBoard,[string]$dns) {
@@ -140,8 +141,10 @@ echo "Notify supervisor." >> $LogFile
 $resp=""
 	$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
 	if ($resp -eq "OK") {
-		echo "Supervisor not respond OK but: $resp." >> $LogFile
-	}else{
 		echo "Supervisor respond string: $resp." >> $LogFile
+		echo "resp length: $resp.Length" >> $LogFile
+	}else{		
+		echo "Supervisor not respond OK but: $resp." >> $LogFile
+		echo "resp length: $resp.Length" >> $LogFile
 	}
 echo "(netappStorage.ps1) End of script." >> $LogFile

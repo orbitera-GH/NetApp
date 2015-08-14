@@ -79,11 +79,20 @@ If (!(Test-Path C:\Windows\Temp\netappStorage.loc)) {
 	
 	#while ($l -lt 3) {
 	#		date >> $LogFile
-	#		echo "Notify supervisor first time and made lock file C:\Windows\Temp\netappStorage.loc" >> $LogFile
+			echo "Notify supervisor first time and made lock file C:\Windows\Temp\netappStorage.loc" >> $LogFile
 	#		$l++
 	#		(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
 	#		start-sleep -s 5
 	#	}
+	$resp=""
+	$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
+	if ($resp -eq "OK") {
+		echo "Supervisor respond string: $resp." >> $LogFile
+		echo "resp length: $resp.Length" >> $LogFile
+	}else{		
+		echo "Supervisor not respond OK but: $resp." >> $LogFile
+		echo "resp length: $resp.Length" >> $LogFile
+	}
 }else{
 	date >> $LogFile
 	echo "Lock - detected. C:\Windows\Temp\netappStorage.loc" >> $LogFile
@@ -138,7 +147,7 @@ If (!(Test-Path C:\Windows\Temp\netappStorage.loc)) {
 	date >> $LogFile
 }
 date >> $LogFile
-echo "Notify supervisor." >> $LogFile
+<#echo "Notify supervisor." >> $LogFile
 $resp=""
 	$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
 	if ($resp -eq "OK") {
@@ -147,5 +156,5 @@ $resp=""
 	}else{		
 		echo "Supervisor not respond OK but: $resp." >> $LogFile
 		echo "resp length: $resp.Length" >> $LogFile
-	}
+	}#>
 echo "(netappStorage.ps1) End of script." >> $LogFile

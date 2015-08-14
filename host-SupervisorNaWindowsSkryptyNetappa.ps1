@@ -39,6 +39,7 @@ download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modRestore
 download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/SMSQLConfig.xml" "c:\Windows\OEM\SMSQLConfig.xml"
 download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConfigureSnapDrive.ps1" "c:\Windows\OEM\modConfigureSnapDrive.ps1"
 download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConfigureSnapManager.ps1" "c:\Windows\OEM\modConfigureSnapManager.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/ALLInOne.ps1" "c:\Windows\OEM\ALLInOne.ps1"
 
 ## download end
 

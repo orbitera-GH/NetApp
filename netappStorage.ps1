@@ -12,7 +12,7 @@ function CheckDNS ([string]$dnsOnBoard,[string]$dns) {
 				start-sleep -s 15
 				date >> $LogFile
 				echo "(netappStorage.ps1) Modify DNS: $dnsOnBoard, Hostname is $SqlServerName, DNS: $dns" >> $LogFile
-				while ($i -lt 11) {
+				while ($i -lt 250) {
 					$i++
 					$dnsOnBoard=Get-DnsClientServerAddress -AddressFamily ipv4 -InterfaceIndex (Get-NetIPInterface -AddressFamily ipv4 -InterfaceAlias "Ethernet*" | select ifIndex -ExpandProperty ifIndex) | select serveraddresses -ExpandProperty serveraddresses
 					if ($dnsOnBoard -eq $dns) {						
@@ -22,20 +22,20 @@ function CheckDNS ([string]$dnsOnBoard,[string]$dns) {
 						$nlookup = nslookup.exe 'netapp.prv'
 						foreach ($nameNetapp in $nlookup) {
 							if ($nameNetapp -like "*netapp.prv") {
-								$i = 100
+								$i = 2000
 								date >> $LogFile
 								echo "(netappStorage.ps1) dns name netapp.prv successfully resolved" >> $LogFile
 								break
 							}else{
 								date >> $LogFile
 								echo "(netappStorage.ps1) wait for resolver" >> $LogFile
-								start-sleep -s 10
+								start-sleep -s 2
 							}
 						}
 					}else{
 						date >> $LogFile
 						echo "(netappStorage.ps1) Wait for DnsClient, dnsOnBoard: $dnsOnBoard , correct DNS is: $dns" >> $LogFile
-						start-sleep -s 10
+						start-sleep -s 2
 					}
 				}				
 			}else{
@@ -48,7 +48,8 @@ If (!(Test-Path C:\Windows\Temp\netappStorage.loc)) {
 	echo "Lock." >> C:\Windows\Temp\netappStorage.loc
 	date >> $LogFile
 	echo "Start modConnectToStorageVM.PS1" >> $LogFile
-	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConnectToStorageVM.ps1 ; C:\Windows\OEM\modLunMapping.ps1 ; C:\Windows\OEM\modAttachSQLDatabase.ps1 ; C:\Windows\OEM\modConfigureSnapDrive.ps1 ; C:\Windows\OEM\modConfigureSnapManager.ps1' >> $LogFile1
+	#C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConnectToStorageVM.ps1 ; C:\Windows\OEM\modLunMapping.ps1 ; C:\Windows\OEM\modAttachSQLDatabase.ps1 ; C:\Windows\OEM\modConfigureSnapDrive.ps1 ; C:\Windows\OEM\modConfigureSnapManager.ps1' >> $LogFile1
+	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\ALLInOne.ps1' >> $LogFile1
 	date >> $LogFile
 	echo "Stop modConnectToStorageVM.PS1" >> $LogFile
 

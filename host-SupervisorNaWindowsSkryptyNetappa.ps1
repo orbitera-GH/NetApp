@@ -9,16 +9,17 @@ $i=0
 $l=0
 #$NetappServicePassword = "P@ssword1"
 $NetappServicePassword = "p@ssword1"
-#$StorageAdmin = "$vmName\testdriveadmin"
-$StorageAdmin = "netapp\netappadmin"
-#$StorageAdminPassword = "P@ssword1"
-$StorageAdminPassword = "Qwerty12"
+$StorageAdmin = "$vmName\testdriveadmin"
+#$StorageAdmin = "netapp\netappadmin"
+$StorageAdminPassword = "p@ssword1"
+#$StorageAdminPassword = "Qwerty12"
 $log="C:\Windows\Panther\bcd.log"
 $myDomain="netapp.prv"
 $ipConfig = ipconfig
 $ip=$ipConfig[8].Replace('   IPv4 Address. . . . . . . . . . . : ','')
 $ip=$ip.Trim()
 $domainControllerIP=$ip.Remove(($ip.LastIndexOf('.')+1))+"68"
+
 ## download
 Function download ([string]$source,[string]$destination) {	
 	Invoke-WebRequest $source -OutFile $destination
@@ -40,12 +41,15 @@ download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/SMSQLConfi
 download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConfigureSnapDrive.ps1" "c:\Windows\OEM\modConfigureSnapDrive.ps1"
 download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConfigureSnapManager.ps1" "c:\Windows\OEM\modConfigureSnapManager.ps1"
 download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/ALLInOne.ps1" "c:\Windows\OEM\ALLInOne.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/makeuser.cmd" "c:\Windows\OEM\makeuser.cmd"
 
 ## download end
 
 copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft SQL Server 2014\SQL Server 2014 Management Studio.lnk" "C:\Users\Public\Desktop\SQL Server 2014 Management Studio.lnk"
 copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapManager for SQL Server PowerShell.lnk" "C:\Users\Public\Desktop\SnapManager for SQL Server PowerShell.lnk"
 copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapManager for SQL Server Management Console.lnk" "C:\Users\Public\Desktop\SnapManager for SQL Server Management Console.lnk"
+
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe  -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist "'cmd.exe /c c:\Windows\OEM\makeuser.cmd'"
 
 ##netapp start
 	date >> $log

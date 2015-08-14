@@ -206,14 +206,14 @@ try
     connect-iscsitarget -NodeAddress $Tar.NodeAddress -IsMultiPathEnabled $True  -TargetPortalAddress $dataLIF2
 
     PostEvent "ConnectToStorageVM Script finished" "Information"
-    exit 1
+    #exit 1
 
 }
 catch
 {
      PostEvent "Error in ConnectToStorageVM Script" "Error"
      PostEvent $_.exception "Error"
-     exit 0
+     #exit 0
 }
 
 #### 2
@@ -396,13 +396,13 @@ try
 
     PostEvent "Finished LunMapping " "Information"
 
-    exit 1
+    #exit 1
 }
 catch
 {
     PostEvent $_.exception "Error"
     
-    exit 0
+    #exit 0
 }
 		   
 ### 3
@@ -703,13 +703,13 @@ try
         PostEvent "Configured SnapDrive for $mgmtLIF" "Information"
     }
 
-    exit 1
+    #exit 1
 }
 catch
 {
     PostEvent $_.exception "Error"
     
-    exit 0
+    #exit 0
 }
 
 ### 5
@@ -774,13 +774,13 @@ try{
     import-config -Server $sqlserver -ControlFilePath $SMSQLConfig -ValidateAndApply
 
     PostEvent "Imported SnapManager configuration" "Information"
-    exit 1
+    #exit 1
 }
 catch
 {
     PostEvent "Error in ConfigureSnapManager Script" "Error"
     PostEvent $_.exception "Error"
-    exit 0
+    #exit 0
 }
 
 

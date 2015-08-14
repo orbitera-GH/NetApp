@@ -85,12 +85,12 @@ If (!(Test-Path C:\Windows\Temp\netappStorage.loc)) {
 	#		start-sleep -s 5
 	#	}
 	$resp=""
-	$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
+	$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlinstall.php?name='+$vmName)
 	if ($resp -eq "OK") {
-		echo "Supervisor respond string: $resp." >> $LogFile
+		echo "Supervisor sqlinstall.php respond string: $resp." >> $LogFile
 		echo "resp length: $resp.Length" >> $LogFile
 	}else{		
-		echo "Supervisor not respond OK but: $resp." >> $LogFile
+		echo "Supervisor sqlinstall.php not respond OK but: $resp." >> $LogFile
 		echo "resp length: $resp.Length" >> $LogFile
 	}
 }else{
@@ -145,6 +145,15 @@ If (!(Test-Path C:\Windows\Temp\netappStorage.loc)) {
 	date >> $LogFile
 	gpupdate.exe /force >> $LogFile
 	date >> $LogFile
+	$resp=""
+	$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
+	if ($resp -eq "OK") {
+		echo "Supervisor sqlready.php respond string: $resp." >> $LogFile
+		echo "resp length: $resp.Length" >> $LogFile
+	}else{		
+		echo "Supervisor sqlready.php not respond OK but: $resp." >> $LogFile
+		echo "resp length: $resp.Length" >> $LogFile
+	}
 }
 date >> $LogFile
 <#echo "Notify supervisor." >> $LogFile

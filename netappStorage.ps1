@@ -114,7 +114,7 @@ $l=0
 					$dns = "10.200.9.68"
 					CheckDNS $dnsOnBoard $dns
 				}
-				default {#date >> $LogFile ; echo "$(czas)  (netappStorage.ps1) ### ERROR can't determine management DNS IP address for VMname: $SqlServerName"  >> $LogFile}
+				default {echo "$(czas)  (netappStorage.ps1) ### ERROR can't determine management DNS IP address for VMname: $SqlServerName"  >> $LogFile}
 			}
 			#date >> $LogFile
 			start-sleep -s 3

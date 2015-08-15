@@ -45,7 +45,7 @@ function CheckDNS ([string]$dnsOnBoard,[string]$dns) {
 }
 $currentUser=[Environment]::UserName
 echo "User is $currentUser" >> $LogFile
-if ($currentUser -like "*testdriveadmin*") {
+#if ($currentUser -like "*testdriveadmin*") {
 	If (!(Test-Path C:\Windows\Temp\netappStorage.loc)) {
 		date >> C:\Windows\Temp\netappStorage.loc
 		echo "Lock." >> C:\Windows\Temp\netappStorage.loc
@@ -158,10 +158,10 @@ if ($currentUser -like "*testdriveadmin*") {
 			echo "resp length: $resp.Length" >> $LogFile
 		}
 	}
-}else{
-	date >> $LogFile
-	echo "netappStorage skip... " >> $LogFile
-}
+#}else{
+#	date >> $LogFile
+#	echo "netappStorage skip... " >> $LogFile
+#}
 date >> $LogFile
 <#echo "Notify supervisor." >> $LogFile
 $resp=""

@@ -7,12 +7,12 @@ $UserName = "NETAPP\netappadmin"
  $Credentials = New-Object System.Management.Automation.PSCredential -ArgumentList $UserName, $SecurePassword
 $i=0
 $l=0
-#$NetappServicePassword = "P@ssword1"
-$NetappServicePassword = "p@ssword1"
-$StorageAdmin = "$vmName\testdriveadmin"
-#$StorageAdmin = "netapp\netappadmin"
-$StorageAdminPassword = "p@ssword1"
-#$StorageAdminPassword = "Qwerty12"
+$NetappServicePassword = "P@ssword1"
+#$NetappServicePassword = "p@ssword1"
+#$StorageAdmin = "$vmName\testdriveadmin"
+$StorageAdmin = "netapp\netappadmin"
+#$StorageAdminPassword = "p@ssword1"
+$StorageAdminPassword = "Qwerty12"
 $log="C:\Windows\Panther\bcd.log"
 $myDomain="netapp.prv"
 $ipConfig = ipconfig
@@ -49,7 +49,7 @@ copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft SQL Server 
 copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapManager for SQL Server PowerShell.lnk" "C:\Users\Public\Desktop\SnapManager for SQL Server PowerShell.lnk"
 copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapManager for SQL Server Management Console.lnk" "C:\Users\Public\Desktop\SnapManager for SQL Server Management Console.lnk"
 
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe  -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist "'cmd.exe /c c:\Windows\OEM\makeuser.cmd'"
+#C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe  -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist "'cmd.exe /c c:\Windows\OEM\makeuser.cmd'"
 
 ##netapp start
 	date >> $log

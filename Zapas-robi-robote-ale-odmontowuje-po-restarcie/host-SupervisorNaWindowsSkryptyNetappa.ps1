@@ -21,16 +21,14 @@ $ip=$ip.Trim()
 $domainControllerIP=$ip.Remove(($ip.LastIndexOf('.')+1))+"68"
 
 ## download
-function czas {$a="$((get-date -Format yyyy-MM-dd_HH:mm:ss).ToString())"; return $a}
-
 Function download ([string]$source,[string]$destination) {	
 	Invoke-WebRequest $source -OutFile $destination
 	if (test-path $destination) {
-		#date >> $log
-		echo "$(czas)  Successfully downloaded file: $destination" >> $log
+		date >> $log
+		echo "Successfully downloaded file: $destination" >> $log
 	}else{
-		#date >> $log
-		echo "$(czas)  Error download file: $destination" >> $log
+		date >> $log
+		echo "Error download file: $destination" >> $log
 	}
 }
 
@@ -54,8 +52,8 @@ copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapManager fo
 #C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe  -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist "'cmd.exe /c c:\Windows\OEM\makeuser.cmd'"
 
 ##netapp start
-	#date >> $log
-	echo "$(czas)  ### NetappStorageON registry and services set start." >> $log
+	date >> $log
+	echo "### NetappStorageON registry and services set start." >> $log
 	$Work="C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\netappStorage.ps1'"
 	$Run="HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
 	Set-ItemProperty $Run "NetappStorageON" ($Work)
@@ -69,12 +67,12 @@ copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapManager fo
 	Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DefaultUserName -Value "$StorageAdmin"
 	Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DefaultPassword -Value "$StorageAdminPassword"
 	Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name AutoAdminLogon -Value "1"
-	#date >> $log
-	echo "$(czas)  ### Registry HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" >> $log
+	date >> $log
+	echo "### Registry HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" >> $log
 	Get-Item HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run >> $log
-	echo "$(czas)  ### Registry HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" >> $log
+	echo "### Registry HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" >> $log
 	Get-Item "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" >> $log
-	echo "$(czas)  ### NetappStorageON registry set stop." >> $log
+	echo "### NetappStorageON registry set stop." >> $log
 ##netapp stop
 
 ##DNS
@@ -85,49 +83,49 @@ Set-DNSClientServerAddress –InterfaceIndex $nicIndex -ServerAddresses $domainCon
 #DNS end
 # Change Netapp Servicess password
 
-#date >> $log
-echo "$(czas)  Service: Data ONTAP VSS" >> $log
+date >> $log
+echo "Service: Data ONTAP VSS" >> $log
 $service = gwmi win32_service -filter "name='Navssprv'"
 $service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword) >> $log
 $service.StartService() >> $log
 start-sleep -s 3
 gwmi win32_service -filter "name='Navssprv'" >> $log
 
-echo "$(czas)  Service: SnapDrive" >> $log
+echo "Service: SnapDrive" >> $log
 $service = gwmi win32_service -filter "name='SWSvc'"
 $service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword) >> $log
 $service.StartService() >> $log
 start-sleep -s 3
 gwmi win32_service -filter "name='SWSvc'" >> $log
 
-echo "$(czas)  Service: SnapDriveManagmentService" >> $log
+echo "Service: SnapDriveManagmentService" >> $log
 $service = gwmi win32_service -filter "name='SDMgmtSvc'"
 $service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword) >> $log
 $service.StartService() >> $log
 start-sleep -s 3
 gwmi win32_service -filter "name='SDMgmtSvc'" >> $log
 
-echo "$(czas)  Service: SnapDriveService" >> $log
+echo "Service: SnapDriveService" >> $log
 $service = gwmi win32_service -filter "name='SnapDriveService'"
 $service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword) >> $log
 $service.StartService() >> $log
 start-sleep -s 3
 gwmi win32_service -filter "name='SnapDriveService'" >> $log
 
-echo "$(czas)  Service: SnapManagerService" >> $log
+echo "Service: SnapManagerService" >> $log
 $service = gwmi win32_service -filter "name='SnapManagerService'"
 $service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword) >> $log
 $service.StartService() >> $log
 start-sleep -s 3
 gwmi win32_service -filter "name='SnapManagerService'" >> $log
 
-#date >> $log
-echo "$(czas)  Change Netapp Servicess password END" >> $log
+date >> $log
+echo "Change Netapp Servicess password END" >> $log
 
 
  Import-Module ServerManager -ErrorAction SilentlyContinue
  Import-Module ADDSDeployment -ErrorAction SilentlyContinue
-#echo "$(czas)  ## bcd.ps1 ###" >> %windir%\Panther\WaSetup.log 
+#echo "## bcd.ps1 ###" >> %windir%\Panther\WaSetup.log 
 
 Write-Host "## bcd.ps1 ###" | Out-File -FilePath "$log" -Append
 while ($i -lt 250) {
@@ -135,17 +133,17 @@ while ($i -lt 250) {
 	Start-Sleep -Seconds 5
 	$response = ping netapp.prv
 	#notify supervisor in netappStorage.ps1
-			#date >> $log
-			#echo "$(czas)  Jest ping $myDomain : $domain" >> $log
-			echo "$(czas)  #### Add-computer to $myDomain #####" >> $log
+			date >> $log
+			#echo "Jest ping $myDomain : $domain" >> $log
+			echo "#### Add-computer to $myDomain #####" >> $log
 			Add-computer -DomainName $myDomain -Credential $Credentials -Restart
 			if ($?) {
 					
-					#date >> $log
-					echo "$(czas)  I ma: $i" >> $log
-					echo "$(czas)  ### Registry HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" >> $log
+					date >> $log
+					echo "I ma: $i" >> $log
+					echo "### Registry HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" >> $log
 					Get-Item HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run >> $log
-					echo "$(czas)  #### Add-computer STOP #####" >> $log
+					echo "#### Add-computer STOP #####" >> $log
 					$i=300
 			}
 		

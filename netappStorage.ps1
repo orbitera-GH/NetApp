@@ -9,7 +9,7 @@ $l=0
 		$i = 0
 		if ($dnsOnBoard -ne $dns) {
 					Set-DNSClientServerAddress –InterfaceIndex $index -ServerAddresses $dns
-					start-sleep -s 15
+					start-sleep -s 5	#15
 					date >> $LogFile
 					echo "(netappStorage.ps1) Modify DNS: $dnsOnBoard, Hostname is $SqlServerName, DNS: $dns" >> $LogFile
 					while ($i -lt 250) {

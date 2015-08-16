@@ -122,10 +122,10 @@ $l=0
 			start-sleep -s 3
 			gpupdate.exe /force >> $LogFile
 			#date >> $LogFile
-			echo "$(czas)  Start ALLInOne.PS1 after restart." >> $LogFile
+			#echo "$(czas)  Start ALLInOne.PS1 after restart." >> $LogFile
 			#C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConnectToStorageVM.ps1 ; C:\Windows\OEM\modLunMapping.ps1 ; C:\Windows\OEM\modAttachSQLDatabase.ps1 ; C:\Windows\OEM\modConfigureSnapDrive.ps1 ; C:\Windows\OEM\modConfigureSnapManager.ps1' >> $LogFile1
-			C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\ALLInOne.ps1' >> $LogFile1			
-			echo "$(czas)  End Start ALLInOne.PS1 after restart." >> $LogFile
+			#C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\ALLInOne.ps1' >> $LogFile1			
+			#echo "$(czas)  End Start ALLInOne.PS1 after restart." >> $LogFile
 			$resp=""
 			$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
 			if ($resp -eq "OK") {

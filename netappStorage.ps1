@@ -62,14 +62,16 @@ $l=0
 			$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlinstall.php?name='+$vmName)
 			if ($resp -eq "OK") {
 				echo "$(czas)  Supervisor sqlinstall.php respond string: $resp." >> $LogFile
-				echo "$(czas)  resp length: $resp.Length" >> $LogFile
+				echo "$(czas)  resp length: $($resp.Length)" >> $LogFile
 			}else{		
 				echo "$(czas)  Supervisor sqlinstall.php not respond OK but: $resp." >> $LogFile
-				echo "$(czas)  resp length: $resp.Length" >> $LogFile
+				echo "$(czas)  resp length: $($resp.Length)" >> $LogFile
 			}
 		}else{
 			#date >> $LogFile
 			echo "$(czas)  Lock - detected. C:\Windows\Temp\netappStorage.loc" >> $LogFile
+			echo "$(czas)  Lock 2." >> C:\Windows\Temp\netappStorage1.loc
+			echo "$(czas)  Create Lock File C:\Windows\Temp\netappStorage1.loc" >> $LogFile
 			$index=Get-NetIPInterface -AddressFamily ipv4 -InterfaceAlias "Ethernet*" | select ifIndex -ExpandProperty ifIndex
 			$SqlServerName = ($env:computername).ToLower()
 			$dnsOnBoard=Get-DnsClientServerAddress -AddressFamily ipv4 -InterfaceIndex (Get-NetIPInterface -AddressFamily ipv4 -InterfaceAlias "Ethernet*" | select ifIndex -ExpandProperty ifIndex) | select serveraddresses -ExpandProperty serveraddresses	
@@ -128,10 +130,10 @@ $l=0
 			$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
 			if ($resp -eq "OK") {
 				echo "$(czas)  Supervisor sqlready.php respond string: $resp." >> $LogFile
-				echo "$(czas)  resp length: $resp.Length" >> $LogFile
+				echo "$(czas)  resp length: $($resp.Length)" >> $LogFile
 			}else{		
 				echo "$(czas)  Supervisor sqlready.php not respond OK but: $resp." >> $LogFile
-				echo "$(czas)  resp length: $resp.Length" >> $LogFile
+				echo "$(czas)  resp length: $($resp.Length)" >> $LogFile
 			}
 		}
 	}else{

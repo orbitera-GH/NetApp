@@ -3,6 +3,8 @@
 $LogFile = "C:\Windows\Panther\netappStorage.log"
 $LogFile1 = "C:\Windows\Panther\netappStorageScripts.log"
 $supervisorDnsName = "supervisor1.testdrivesupervisor.eastus.cloudapp.azure.com"
+$supervisorIP="168.62.183.34"
+$debug="&debug=true"
 function czas {$a="$((get-date -Format yyyy-MM-dd_HH:mm:ss).ToString())"; return $a}
 
 $vmName=($env:computername).ToLower()
@@ -27,6 +29,7 @@ $l=0
 									$i = 2000
 									#date >> $LogFile
 									echo "$(czas)  (netappStorage.ps1) dns name netapp.prv successfully resolved" >> $LogFile
+									$suervisorResp = ping $supervisorIP
 									break
 								}else{
 									#date >> $LogFile
@@ -59,8 +62,9 @@ $l=0
 			echo "$(czas)  Stop ALLInOne.PS1" >> $LogFile
 
 			$resp=""
-			$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlinstall.php?name='+$vmName)
-			if ($resp -eq "OK") {
+			$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlinstall.php?name='+$vmName + $debug)
+			$Length = $resp.Length
+			if ($Length -ge 2) {
 				echo "$(czas)  Supervisor sqlinstall.php respond string: $resp." >> $LogFile
 				echo "$(czas)  resp length: $($resp.Length)" >> $LogFile
 			}else{		
@@ -78,42 +82,52 @@ $l=0
 			switch -wildcard ($SqlServerName) { 
 				"*01" {
 					$dns = "10.200.0.68"
+					$mgmtLIF = "192.168.250.2"
 					CheckDNS $dnsOnBoard $dns
 				}
 				"*02" {
 					$dns = "10.200.1.68"
+					$mgmtLIF = "192.168.250.18"
 					CheckDNS $dnsOnBoard $dns
 				} 
 				"*03" {
 					$dns = "10.200.2.68"
+					$mgmtLIF = "192.168.250.34"
 					CheckDNS $dnsOnBoard $dns
 				}
 				"*04" {
 					$dns = "10.200.3.68"
+					$mgmtLIF = "192.168.250.50"
 					CheckDNS $dnsOnBoard $dns
 				}
 				"*05" {
 					$dns = "10.200.4.68"
+					$mgmtLIF = "192.168.250.66"
 					CheckDNS $dnsOnBoard $dns
 				}
 				"*06" {
 					$dns = "10.200.5.68"
+					$mgmtLIF = "192.168.250.82"
 					CheckDNS $dnsOnBoard $dns
 				}
 				"*07" {
 					$dns = "10.200.6.68"
+					$mgmtLIF = "192.168.250.98"
 					CheckDNS $dnsOnBoard $dns
 				}
 				"*08" {
 					$dns = "10.200.7.68"
+					$mgmtLIF = "192.168.250.114"
 					CheckDNS $dnsOnBoard $dns
 				}
 				"*09" {
 					$dns = "10.200.8.68"
+					$mgmtLIF = "192.168.250.130"
 					CheckDNS $dnsOnBoard $dns
 				}
 				"*10" {
 					$dns = "10.200.9.68"
+					$mgmtLIF = "192.168.250.146"
 					CheckDNS $dnsOnBoard $dns
 				}
 				default {echo "$(czas)  (netappStorage.ps1) ### ERROR can't determine management DNS IP address for VMname: $SqlServerName"  >> $LogFile}
@@ -126,13 +140,20 @@ $l=0
 			#C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modConnectToStorageVM.ps1 ; C:\Windows\OEM\modLunMapping.ps1 ; C:\Windows\OEM\modAttachSQLDatabase.ps1 ; C:\Windows\OEM\modConfigureSnapDrive.ps1 ; C:\Windows\OEM\modConfigureSnapManager.ps1' >> $LogFile1
 			#C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\ALLInOne.ps1' >> $LogFile1			
 			#echo "$(czas)  End Start ALLInOne.PS1 after restart." >> $LogFile
+			$mgmtLIFping = ping $mgmtLIF
+			if ($mgmtLIFping -split ':' -contains "Reply from $mgmtLIF") {
+				echo "$(czas)  mgmtLIF ping respond OK." >> $LogFile
+			}else{
+				echo "$(czas)  mgmtLIF ping NOT respond." >> $LogFile
+			}
 			$resp=""
-			$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
-			if ($resp -eq "OK") {
-				echo "$(czas)  Supervisor sqlready.php respond string: $resp." >> $LogFile
+			$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName + $debug)
+			$Length = $resp.Length
+			if ($Length -ge 2) {
+				echo "$(czas)  Supervisor sqlinstall.php respond string: $resp." >> $LogFile
 				echo "$(czas)  resp length: $($resp.Length)" >> $LogFile
 			}else{		
-				echo "$(czas)  Supervisor sqlready.php not respond OK but: $resp." >> $LogFile
+				echo "$(czas)  Supervisor sqlinstall.php not respond OK but: $resp." >> $LogFile
 				echo "$(czas)  resp length: $($resp.Length)" >> $LogFile
 			}
 		}

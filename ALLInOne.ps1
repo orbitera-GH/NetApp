@@ -1,4 +1,4 @@
-
+function czas {$a="$((get-date -Format yyyy-MM-dd_HH:mm:ss).ToString())"; return $a}
 ###########################################################################
 # 
 # Script to connect to SVM from SQL Virtual Machine
@@ -14,90 +14,90 @@
 
 $SqlServerName = ($env:computername).ToLower()
 $LogFile = "C:\Windows\Panther\netappStorageConnectToStorage.log"
-date >> $LogFile
-echo "modConnectToStorage start..." >> $LogFile
+
+echo "$(czas) modConnectToStorage start..." >> $LogFile
 switch -wildcard ($SqlServerName) { 
 		"*01" {
 			$mgmtLIF = "192.168.250.2"
 			$dataLIF1 = "192.168.250.4"
 			$dataLIF2 = "192.168.250.5"
 			$server = "Server140"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*02" {
 			$mgmtLIF = "192.168.250.18"
 			$dataLIF1 = "192.168.250.20"
 			$dataLIF2 = "192.168.250.21"
 			$server = "Server141"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		} 
 		"*03" {
 			$mgmtLIF = "192.168.250.34"
 			$dataLIF1 = "192.168.250.36"
 			$dataLIF2 = "192.168.250.37"
 			$server = "Server142"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*04" {
 			$mgmtLIF = "192.168.250.50"
 			$dataLIF1 = "192.168.250.52"
 			$dataLIF2 = "192.168.250.53"
 			$server = "Server143"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*05" {
 			$mgmtLIF = "192.168.250.66"
 			$dataLIF1 = "192.168.250.68"
 			$dataLIF2 = "192.168.250.69"
 			$server = "Server144"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*06" {
 			$mgmtLIF = "192.168.250.82"
 			$dataLIF1 = "192.168.250.84"
 			$dataLIF2 = "192.168.250.85"
 			$server = "Server145"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*07" {
 			$mgmtLIF = "192.168.250.98"
 			$dataLIF1 = "192.168.250.100"
 			$dataLIF2 = "192.168.250.101"
 			$server = "Server146"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*08" {
 			$mgmtLIF = "192.168.250.114"
 			$dataLIF1 = "192.168.250.116"
 			$dataLIF2 = "192.168.250.117"
 			$server = "Server147"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*09" {
 			$mgmtLIF = "192.168.250.130"
 			$dataLIF1 = "192.168.250.132"
 			$dataLIF2 = "192.168.250.133"
 			$server = "Server148"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*10" {
 			$mgmtLIF = "192.168.250.146"
 			$dataLIF1 = "192.168.250.148"
 			$dataLIF2 = "192.168.250.149"
 			$server = "Server149"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
-		default {date >> $LogFile ; echo "### ERROR can't determine management LIF IP address for VMname: $SqlServerName"  >> $LogFile}
+		default {echo "$(czas) ### ERROR can't determine management LIF IP address for VMname: $SqlServerName"  >> $LogFile}
 	}
 
 
@@ -233,90 +233,90 @@ catch
 
 $SqlServerName = ($env:computername).ToLower()
 $LogFile = "C:\Windows\Panther\netappStorageLunMapping.log"
-date >> $LogFile
-echo "modLunMapping start..." >> $LogFile
+
+echo "$(czas) modLunMapping start..." >> $LogFile
 switch -wildcard ($SqlServerName) { 
 		"*01" {
 			$mgmtLIF = "192.168.250.2"
 			$dataLIF1 = "192.168.250.4"
 			$dataLIF2 = "192.168.250.5"
 			$server = "Server140"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*02" {
 			$mgmtLIF = "192.168.250.18"
 			$dataLIF1 = "192.168.250.20"
 			$dataLIF2 = "192.168.250.21"
 			$server = "Server141"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		} 
 		"*03" {
 			$mgmtLIF = "192.168.250.34"
 			$dataLIF1 = "192.168.250.36"
 			$dataLIF2 = "192.168.250.37"
 			$server = "Server142"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*04" {
 			$mgmtLIF = "192.168.250.50"
 			$dataLIF1 = "192.168.250.52"
 			$dataLIF2 = "192.168.250.53"
 			$server = "Server143"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*05" {
 			$mgmtLIF = "192.168.250.66"
 			$dataLIF1 = "192.168.250.68"
 			$dataLIF2 = "192.168.250.69"
 			$server = "Server144"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*06" {
 			$mgmtLIF = "192.168.250.82"
 			$dataLIF1 = "192.168.250.84"
 			$dataLIF2 = "192.168.250.85"
 			$server = "Server145"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*07" {
 			$mgmtLIF = "192.168.250.98"
 			$dataLIF1 = "192.168.250.100"
 			$dataLIF2 = "192.168.250.101"
 			$server = "Server146"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*08" {
 			$mgmtLIF = "192.168.250.114"
 			$dataLIF1 = "192.168.250.116"
 			$dataLIF2 = "192.168.250.117"
 			$server = "Server147"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*09" {
 			$mgmtLIF = "192.168.250.130"
 			$dataLIF1 = "192.168.250.132"
 			$dataLIF2 = "192.168.250.133"
 			$server = "Server148"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*10" {
 			$mgmtLIF = "192.168.250.146"
 			$dataLIF1 = "192.168.250.148"
 			$dataLIF2 = "192.168.250.149"
 			$server = "Server149"
-			date >> $LogFile
-			echo "Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
-		default {date >> $LogFile ; echo "### ERROR can't determine management LIF IP address for VMname: $SqlServerName"  >> $LogFile}
+		default {echo "$(czas) ### ERROR can't determine management LIF IP address for VMname: $SqlServerName"  >> $LogFile}
 	}
 
 #$dataLIF1 = "192.168.250.36"
@@ -421,8 +421,8 @@ catch
 #Assembly Imports
 
 $LogFile = "C:\Windows\Panther\netappStorageAttachDB.log"
-date >> $LogFile
-echo "modAttachSQLDatabase start..." >> $LogFile
+
+echo "$(czas) modAttachSQLDatabase start..." >> $LogFile
 
 [System.Reflection.Assembly]::LoadWithPartialName( 'Microsoft.SqlServer.SMO')| out-null
 [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.SMOExtended') | out-null
@@ -431,8 +431,24 @@ echo "modAttachSQLDatabase start..." >> $LogFile
 [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.Management.Smo.AttachOptions') | out-null
 
 #Data and Log file paths, set per drive mapping
-$datastr = "G:\Adventureworks.mdf"
-$logstr = "H:\Adventureworks_log.ldf"
+#trying to locate the database
+$driveList=Get-PSDrive -PSProvider FileSystem | select root -ExpandProperty root
+	foreach ($drive in $driveList) {
+		if ($drive -ne "A:\"){
+			$dataFilePatch=$drive+"Adventureworks.mdf"
+			$logFilePatch=$drive+"Adventureworks_log.ldf"
+			if (test-path $dataFilePatch) {
+				$datastr=$dataFilePatch
+				echo "$(czas) Database Patch: $datastr" >> $LogFile
+			}
+			if (test-path $logFilePatch) {
+				$logstr=$logFilePatch
+				echo "$(czas) Log Patch: $logstr" >> $LogFile
+			}
+		}
+	}
+#$datastr = "G:\Adventureworks.mdf"
+#$logstr = "H:\Adventureworks_log.ldf"
 
 $verbose = $true #for debugging
 
@@ -484,7 +500,7 @@ try
     $acl.SetOwner([System.Security.Principal.NTAccount] "SYSTEM")
 
     $username = "SYSTEM"
-    $logstr = "H:\Adventureworks_log.ldf"
+    #$logstr = "H:\Adventureworks_log.ldf"
     $acl = (Get-Item $logstr).GetAccessControl("Access")
     $accessrule = New-Object system.security.AccessControl.FileSystemAccessRule($username, "FullControl", "None", "None", "Allow")
     $acl.AddAccessRule($accessrule)
@@ -546,8 +562,8 @@ catch
 
 $sqlserver = ($env:computername).ToLower()
 $LogFile = "C:\Windows\Panther\netappStorageConfigureSnapDrive.log"
-date >> $LogFile
-echo "modLunMapping start..." >> $LogFile
+
+echo "$(czas) modLunMapping start..." >> $LogFile
 switch -wildcard ($sqlserver) { 
 		"*01" {
 			$mgmtLIF = "192.168.250.2"
@@ -555,8 +571,8 @@ switch -wildcard ($sqlserver) {
 			$dataLIF2 = "192.168.250.5"
 			$server = "Server140"
 			$Vserver = "aztestdrive140"
-			date >> $LogFile
-			echo "Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*02" {
 			$mgmtLIF = "192.168.250.18"
@@ -564,8 +580,8 @@ switch -wildcard ($sqlserver) {
 			$dataLIF2 = "192.168.250.21"
 			$server = "Server141"
 			$Vserver = "aztestdrive141"
-			date >> $LogFile
-			echo "Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		} 
 		"*03" {
 			$mgmtLIF = "192.168.250.34"
@@ -573,8 +589,8 @@ switch -wildcard ($sqlserver) {
 			$dataLIF2 = "192.168.250.37"
 			$server = "Server142"
 			$Vserver = "aztestdrive142"
-			date >> $LogFile
-			echo "Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*04" {
 			$mgmtLIF = "192.168.250.50"
@@ -582,8 +598,8 @@ switch -wildcard ($sqlserver) {
 			$dataLIF2 = "192.168.250.53"
 			$server = "Server143"
 			$Vserver = "aztestdrive143"
-			date >> $LogFile
-			echo "Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*05" {
 			$mgmtLIF = "192.168.250.66"
@@ -591,8 +607,8 @@ switch -wildcard ($sqlserver) {
 			$dataLIF2 = "192.168.250.69"
 			$server = "Server144"
 			$Vserver = "aztestdrive144"
-			date >> $LogFile
-			echo "Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*06" {
 			$mgmtLIF = "192.168.250.82"
@@ -600,8 +616,8 @@ switch -wildcard ($sqlserver) {
 			$dataLIF2 = "192.168.250.85"
 			$server = "Server145"
 			$Vserver = "aztestdrive145"
-			date >> $LogFile
-			echo "Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*07" {
 			$mgmtLIF = "192.168.250.98"
@@ -609,8 +625,8 @@ switch -wildcard ($sqlserver) {
 			$dataLIF2 = "192.168.250.101"
 			$server = "Server146"
 			$Vserver = "aztestdrive146"
-			date >> $LogFile
-			echo "Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*08" {
 			$mgmtLIF = "192.168.250.114"
@@ -618,8 +634,8 @@ switch -wildcard ($sqlserver) {
 			$dataLIF2 = "192.168.250.117"
 			$server = "Server147"
 			$Vserver = "aztestdrive147"
-			date >> $LogFile
-			echo "Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*09" {
 			$mgmtLIF = "192.168.250.130"
@@ -627,8 +643,8 @@ switch -wildcard ($sqlserver) {
 			$dataLIF2 = "192.168.250.133"
 			$server = "Server148"
 			$Vserver = "aztestdrive148"
-			date >> $LogFile
-			echo "Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
 		"*10" {
 			$mgmtLIF = "192.168.250.146"
@@ -636,10 +652,10 @@ switch -wildcard ($sqlserver) {
 			$dataLIF2 = "192.168.250.149"
 			$server = "Server149"
 			$Vserver = "aztestdrive149"
-			date >> $LogFile
-			echo "Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
+			
+			echo "$(czas) Hostname is $sqlserver, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 		}
-		default {date >> $LogFile ; echo "### ERROR can't determine management LIF IP address for VMname: $sqlserver"  >> $LogFile}
+		default {echo "$(czas) ### ERROR can't determine management LIF IP address for VMname: $sqlserver"  >> $LogFile}
 	}
 
 #$mgmtLIF = "192.168.250.34"
@@ -782,6 +798,3 @@ catch
     PostEvent $_.exception "Error"
     #exit 0
 }
-
-
-

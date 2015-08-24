@@ -52,6 +52,57 @@ copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapManager fo
 copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapManager for SQL Server Management Console.lnk" "C:\Users\Public\Desktop\SnapManager for SQL Server Management Console.lnk"
 copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapDrive.lnk" "C:\Users\Public\Desktop\SnapDrive.lnk"
 
+## controller.txt (file on sql desktop)
+echo "$(czas)  start assemble controller.txt" >> $log
+switch -wildcard ($vmName) { 
+		"*01" {
+			$vnetNameForConntrollerFile = "aztestdrive140"
+			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
+		}
+		"*02" {
+			$vnetNameForConntrollerFile = "aztestdrive141"
+			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
+		} 
+		"*03" {
+			$vnetNameForConntrollerFile = "aztestdrive142"
+			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
+		}
+		"*04" {
+			$vnetNameForConntrollerFile = "aztestdrive143"
+			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
+		}
+		"*05" {
+			$vnetNameForConntrollerFile = "aztestdrive144"
+			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
+		}
+		"*06" {
+			$vnetNameForConntrollerFile = "aztestdrive145"
+			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
+		}
+		"*07" {
+			$vnetNameForConntrollerFile = "aztestdrive146"
+			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
+		}
+		"*08" {
+			$vnetNameForConntrollerFile = "aztestdrive147"
+			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
+		}
+		"*09" {
+			$vnetNameForConntrollerFile = "aztestdrive148"
+			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
+		}
+		"*10" {
+			$vnetNameForConntrollerFile = "aztestdrive149"
+			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
+		}
+		default {echo "$(czas) ### ERROR can't determine aztestdrive network name for VMname: $vmName"  >> $LogFile}
+	}
+Write-Output "NetApp Storage Controller: $vnetNameForConntrollerFile" | Out-File -FilePath C:\Users\Public\Desktop\controller.txt -Append
+Write-Output "UserName: VSAdmin" | Out-File -FilePath C:\Users\Public\Desktop\controller.txt -Append
+Write-Output "Password: Orbitera123!" | Out-File -FilePath C:\Users\Public\Desktop\controller.txt -Append
+echo "$(czas)  stop assemble controller.txt" >> $log
+## controller.txt stop
+
 #C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe  -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist "'cmd.exe /c c:\Windows\OEM\makeuser.cmd'"
 
 ##netapp start

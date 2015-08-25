@@ -1,12 +1,5 @@
 # Main script running via host.ps1 on sql's machines
-#
-#	DEVEL
-#
-#	DEVEL
-#
-#	DEVEL
-#
-######################################################
+
 $vmName=($env:computername).ToLower()
 $PlainPassword = "Qwerty12"
  $SecurePassword = (ConvertTo-SecureString $PlainPassword -AsPlainText -Force) 
@@ -42,17 +35,16 @@ Function download ([string]$source,[string]$destination) {
 	}
 }
 
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/netappStorage.ps1" "c:\Windows\OEM\netappStorage.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modAttachSQLDatabase.ps1" "c:\Windows\OEM\modAttachSQLDatabase.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modConnectToStorageVM.ps1" "c:\Windows\OEM\modConnectToStorageVM.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modLunMapping.ps1" "c:\Windows\OEM\modLunMapping.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modRestoreVolume.ps1" "c:\Windows\OEM\modRestoreVolume.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/SMSQLConfig.xml" "c:\Windows\OEM\SMSQLConfig.xml"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modConfigureSnapDrive.ps1" "c:\Windows\OEM\modConfigureSnapDrive.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modConfigureSnapManager.ps1" "c:\Windows\OEM\modConfigureSnapManager.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/ALLInOne.ps1" "c:\Windows\OEM\ALLInOne.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/makeuser.cmd" "c:\Windows\OEM\makeuser.cmd"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/SuperVisorIP.txt" "c:\Windows\OEM\SuperVisorIP.txt"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/netappStorage.ps1" "c:\Windows\OEM\netappStorage.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modAttachSQLDatabase.ps1" "c:\Windows\OEM\modAttachSQLDatabase.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConnectToStorageVM.ps1" "c:\Windows\OEM\modConnectToStorageVM.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modLunMapping.ps1" "c:\Windows\OEM\modLunMapping.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modRestoreVolume.ps1" "c:\Windows\OEM\modRestoreVolume.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/SMSQLConfig.xml" "c:\Windows\OEM\SMSQLConfig.xml"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConfigureSnapDrive.ps1" "c:\Windows\OEM\modConfigureSnapDrive.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConfigureSnapManager.ps1" "c:\Windows\OEM\modConfigureSnapManager.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/ALLInOne.ps1" "c:\Windows\OEM\ALLInOne.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/makeuser.cmd" "c:\Windows\OEM\makeuser.cmd"
 
 ## download end
 
@@ -60,57 +52,6 @@ copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft SQL Server 
 copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapManager for SQL Server PowerShell.lnk" "C:\Users\Public\Desktop\SnapManager for SQL Server PowerShell.lnk"
 copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapManager for SQL Server Management Console.lnk" "C:\Users\Public\Desktop\SnapManager for SQL Server Management Console.lnk"
 copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapDrive.lnk" "C:\Users\Public\Desktop\SnapDrive.lnk"
-
-## controller.txt (file on sql desktop)
-echo "$(czas)  start assemble controller.txt" >> $log
-switch -wildcard ($vmName) { 
-		"*01" {
-			$vnetNameForConntrollerFile = "aztestdrive140"
-			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
-		}
-		"*02" {
-			$vnetNameForConntrollerFile = "aztestdrive141"
-			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
-		} 
-		"*03" {
-			$vnetNameForConntrollerFile = "aztestdrive142"
-			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
-		}
-		"*04" {
-			$vnetNameForConntrollerFile = "aztestdrive143"
-			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
-		}
-		"*05" {
-			$vnetNameForConntrollerFile = "aztestdrive144"
-			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
-		}
-		"*06" {
-			$vnetNameForConntrollerFile = "aztestdrive145"
-			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
-		}
-		"*07" {
-			$vnetNameForConntrollerFile = "aztestdrive146"
-			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
-		}
-		"*08" {
-			$vnetNameForConntrollerFile = "aztestdrive147"
-			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
-		}
-		"*09" {
-			$vnetNameForConntrollerFile = "aztestdrive148"
-			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
-		}
-		"*10" {
-			$vnetNameForConntrollerFile = "aztestdrive149"
-			echo "$(czas)  vnetName for controller.txt: $vnetNameForConntrollerFile" >> $log
-		}
-		default {echo "$(czas) ### ERROR can't determine aztestdrive network name for VMname: $vmName"  >> $LogFile}
-	}
-Write-Output "NetApp Storage Controller: $vnetNameForConntrollerFile" | Out-File -FilePath C:\Users\Public\Desktop\controller.txt -Append
-Write-Output "UserName: VSAdmin" | Out-File -FilePath C:\Users\Public\Desktop\controller.txt -Append
-Write-Output "Password: Orbitera123!" | Out-File -FilePath C:\Users\Public\Desktop\controller.txt -Append
-echo "$(czas)  stop assemble controller.txt" >> $log
-## controller.txt stop
 
 #C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe  -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist "'cmd.exe /c c:\Windows\OEM\makeuser.cmd'"
 
@@ -183,6 +124,7 @@ function changeSQLservice ([string]$NetappServiceUser, [string]$NetappServicePas
 }
 
 changeSQLservice $NetappServiceUser $NetappServicePassword
+
 
  Import-Module ServerManager -ErrorAction SilentlyContinue
  Import-Module ADDSDeployment -ErrorAction SilentlyContinue

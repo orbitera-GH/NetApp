@@ -92,14 +92,13 @@ function changeNetappServicePassword ([string]$NetappServiceName, [string]$Netap
 	$Service.StopService()
 	start-sleep -s 2
 	echo "$(czas) Status service $NetappServiceName is: $($service.State)" >> $log
-	$ServiceSqlServer.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword)
+	$Service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword)
 	$Service.StartService()
 	start-sleep -s 3
 	$ServiceStatus = gwmi win32_service -Filter "name='$NetappServiceName'"
 	echo "$(czas) Status service $NetappServiceName is: $ServiceStatus" >> $log
 	echo "$(czas) End working with $NetappServiceName" >> $log
 }
-
 
 changeNetappServicePassword "Navssprv" $NetappServicePassword
 changeNetappServicePassword "SWSvc" $NetappServicePassword

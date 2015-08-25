@@ -1,5 +1,12 @@
 # Main script running via host.ps1 on sql's machines
-
+#
+#	DEVEL
+#
+#	DEVEL
+#
+#	DEVEL
+#
+######################################################
 $vmName=($env:computername).ToLower()
 $PlainPassword = "Qwerty12"
  $SecurePassword = (ConvertTo-SecureString $PlainPassword -AsPlainText -Force) 
@@ -8,6 +15,7 @@ $UserName = "NETAPP\netappadmin"
 $i=0
 $l=0
 $NetappServicePassword = "P@ssword1"
+$NetappServiceUser=".\testdriveadmin"
 #$NetappServicePassword = "p@ssword1"
 #$StorageAdmin = "$vmName\testdriveadmin"
 $StorageAdmin = "netapp\netappadmin"
@@ -34,16 +42,17 @@ Function download ([string]$source,[string]$destination) {
 	}
 }
 
-download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/netappStorage.ps1" "c:\Windows\OEM\netappStorage.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modAttachSQLDatabase.ps1" "c:\Windows\OEM\modAttachSQLDatabase.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConnectToStorageVM.ps1" "c:\Windows\OEM\modConnectToStorageVM.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modLunMapping.ps1" "c:\Windows\OEM\modLunMapping.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modRestoreVolume.ps1" "c:\Windows\OEM\modRestoreVolume.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/SMSQLConfig.xml" "c:\Windows\OEM\SMSQLConfig.xml"
-download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConfigureSnapDrive.ps1" "c:\Windows\OEM\modConfigureSnapDrive.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConfigureSnapManager.ps1" "c:\Windows\OEM\modConfigureSnapManager.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/ALLInOne.ps1" "c:\Windows\OEM\ALLInOne.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/makeuser.cmd" "c:\Windows\OEM\makeuser.cmd"
+download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/netappStorage.ps1" "c:\Windows\OEM\netappStorage.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modAttachSQLDatabase.ps1" "c:\Windows\OEM\modAttachSQLDatabase.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modConnectToStorageVM.ps1" "c:\Windows\OEM\modConnectToStorageVM.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modLunMapping.ps1" "c:\Windows\OEM\modLunMapping.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modRestoreVolume.ps1" "c:\Windows\OEM\modRestoreVolume.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/SMSQLConfig.xml" "c:\Windows\OEM\SMSQLConfig.xml"
+download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modConfigureSnapDrive.ps1" "c:\Windows\OEM\modConfigureSnapDrive.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modConfigureSnapManager.ps1" "c:\Windows\OEM\modConfigureSnapManager.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/ALLInOne.ps1" "c:\Windows\OEM\ALLInOne.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/makeuser.cmd" "c:\Windows\OEM\makeuser.cmd"
+download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/SuperVisorIP.txt" "c:\Windows\OEM\SuperVisorIP.txt"
 
 ## download end
 
@@ -136,46 +145,44 @@ $nicIndex = Get-NetIPInterface -InterfaceAlias ethernet -AddressFamily ipv4 | se
 Set-DNSClientServerAddress –InterfaceIndex $nicIndex -ServerAddresses $domainControllerIP
 #DNS end
 # Change Netapp Servicess password
+function changeNetappServicePassword ([string]$NetappServiceName, [string]$NetappServicePassword) {
+	echo "$(czas) Start working with $NetappServiceName" >> $log
+	$Service = gwmi win32_service -Filter "name='$NetappServiceName'"
+	$Service.StopService()
+	start-sleep -s 2
+	echo "$(czas) Status service $NetappServiceName is: $($service.State)" >> $log
+	$ServiceSqlServer.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword)
+	$Service.StartService()
+	start-sleep -s 3
+	$ServiceStatus = gwmi win32_service -Filter "name='$NetappServiceName'"
+	echo "$(czas) Status service $NetappServiceName is: $ServiceStatus" >> $log
+	echo "$(czas) End working with $NetappServiceName" >> $log
+}
 
-#date >> $log
-echo "$(czas)  Service: Data ONTAP VSS" >> $log
-$service = gwmi win32_service -filter "name='Navssprv'"
-$service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword) >> $log
-$service.StartService() >> $log
-start-sleep -s 3
-gwmi win32_service -filter "name='Navssprv'" >> $log
 
-echo "$(czas)  Service: SnapDrive" >> $log
-$service = gwmi win32_service -filter "name='SWSvc'"
-$service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword) >> $log
-$service.StartService() >> $log
-start-sleep -s 3
-gwmi win32_service -filter "name='SWSvc'" >> $log
+changeNetappServicePassword "Navssprv" $NetappServicePassword
+changeNetappServicePassword "SWSvc" $NetappServicePassword
+changeNetappServicePassword "SDMgmtSvc" $NetappServicePassword
+changeNetappServicePassword "SnapDriveService" $NetappServicePassword
+changeNetappServicePassword "SnapManagerService" $NetappServicePassword
 
-echo "$(czas)  Service: SnapDriveManagmentService" >> $log
-$service = gwmi win32_service -filter "name='SDMgmtSvc'"
-$service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword) >> $log
-$service.StartService() >> $log
-start-sleep -s 3
-gwmi win32_service -filter "name='SDMgmtSvc'" >> $log
-
-echo "$(czas)  Service: SnapDriveService" >> $log
-$service = gwmi win32_service -filter "name='SnapDriveService'"
-$service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword) >> $log
-$service.StartService() >> $log
-start-sleep -s 3
-gwmi win32_service -filter "name='SnapDriveService'" >> $log
-
-echo "$(czas)  Service: SnapManagerService" >> $log
-$service = gwmi win32_service -filter "name='SnapManagerService'"
-$service.Change($Null,$Null,$Null,$Null,$Null,$Null,$Null,$NetappServicePassword) >> $log
-$service.StartService() >> $log
-start-sleep -s 3
-gwmi win32_service -filter "name='SnapManagerService'" >> $log
-
-#date >> $log
 echo "$(czas)  Change Netapp Servicess password END" >> $log
 
+function changeSQLservice ([string]$NetappServiceUser, [string]$NetappServicePassword) {
+	$ServiceSqlServer = gwmi win32_service -Filter "name='MSSQLSERVER'"
+	$ServiceSqlAgent = gwmi win32_service -Filter "name='SQLSERVERAGENT'"
+	$ServiceSqlAgent.StopService()
+	$ServiceSqlServer.StopService()
+	$ServiceSqlAgent.state
+	$ServiceSqlServer.state
+	$ServiceSqlServer.Change($Null,$Null,$Null,$Null,$Null,$Null,$NetappServiceUser,$NetappServicePassword)
+	$ServiceSqlServer.StartService()
+	$ServiceSqlAgent.StartService()
+	$ServiceSqlAgent.state
+	$ServiceSqlServer.state
+}
+
+changeSQLservice $NetappServiceUser $NetappServicePassword
 
  Import-Module ServerManager -ErrorAction SilentlyContinue
  Import-Module ADDSDeployment -ErrorAction SilentlyContinue

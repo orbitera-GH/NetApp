@@ -2,8 +2,17 @@
 # SnapManager Configuration Import Script
 ###############################################
 
+#
+#	Production
+#
+#	Production
+#
+#	Production
+#
+######################################################
+
 #$SMSQLConfig = "C:\NetApp\SMSQLConfig.xml"
-$SMSQLConfig = "C:\Widows\OEM\SMSQLConfig.xml"
+$SMSQLConfig = "C:\Windows\OEM\SMSQLConfig.xml"
 #$sqlserver = "sqltestdrive03b"
 $sqlserver = ($env:computername).ToLower()
 

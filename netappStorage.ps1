@@ -1,9 +1,15 @@
 # Mount NetApp storage and repair DNS settings past shutdown VM
+#
+#
+# Production
+#
+# Production
 
 $LogFile = "C:\Windows\Panther\netappStorage.log"
 $LogFile1 = "C:\Windows\Panther\netappStorageScripts.log"
+$SupervisorIP = Get-Content -Path "c:\Windows\OEM\SuperVisorIP.txt"
 $supervisorDnsName = "supervisor1.testdrivesupervisor.eastus.cloudapp.azure.com"
-$supervisorIP="168.62.183.34"
+#$supervisorIP="23.96.43.23"
 $debug="&debug=true"
 function czas {$a="$((get-date -Format yyyy-MM-dd_HH:mm:ss).ToString())"; return $a}
 
@@ -62,7 +68,7 @@ $l=0
 			echo "$(czas)  Stop ALLInOne.PS1" >> $LogFile
 
 			$resp=""
-			$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlinstall.php?name='+$vmName + $debug)
+			$resp=(new-object net.webclient).DownloadString('http://'+$SupervisorIP+'/sqlinstall.php?name='+$vmName + $debug)
 			$Length = $resp.Length
 			if ($Length -ge 2) {
 				echo "$(czas)  Supervisor sqlinstall.php respond string: $resp." >> $LogFile
@@ -147,7 +153,7 @@ $l=0
 				echo "$(czas)  mgmtLIF ping NOT respond." >> $LogFile
 			}
 			$resp=""
-			$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName + $debug)
+			$resp=(new-object net.webclient).DownloadString('http://'+$SupervisorIP+'/sqlready.php?name='+$vmName + $debug)
 			$Length = $resp.Length
 			if ($Length -ge 2) {
 				echo "$(czas)  Supervisor sqlinstall.php respond string: $resp." >> $LogFile
@@ -164,7 +170,7 @@ $l=0
 	#date >> $LogFile
 	<#echo "$(czas)  Notify supervisor." >> $LogFile
 	$resp=""
-		$resp=(new-object net.webclient).DownloadString('http://168.62.183.34/sqlready.php?name='+$vmName)
+		$resp=(new-object net.webclient).DownloadString('http://23.96.43.23/sqlready.php?name='+$vmName)
 		if ($resp -eq "OK") {
 			echo "$(czas)  Supervisor respond string: $resp." >> $LogFile
 			echo "$(czas)  resp length: $resp.Length" >> $LogFile

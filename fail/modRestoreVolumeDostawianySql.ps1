@@ -17,7 +17,7 @@ function czas {$a="$((get-date -Format yyyy-MM-dd_HH:mm:ss).ToString())"; return
 
 #date >> $LogFile
 echo "$(czas)  Starting script modRestoreVolume.ps1..." >> $LogFile
-	#If (Test-Path C:\Windows\Temp\netappStorage1.loc) {
+	If (Test-Path C:\Windows\Temp\netappStorage1.loc) {
 		echo "$(czas)  Second lock - detected. C:\Windows\Temp\netappStorage1.loc. Running modRestoreVolume.ps1 script" >> $LogFile
 		#date >> $LogFile
 			echo "$(czas)  File $PermissionFile was detected. Start  Netapp RestoreVolume procedure." >> $LogFile
@@ -207,7 +207,7 @@ echo "$(czas)  Starting script modRestoreVolume.ps1..." >> $LogFile
 			exit 0
 			#end catch
 		}
-	#}else{
-	#	echo "$(czas)  Cant finf lock file. C:\Windows\Temp\netappStorage1.loc. Skipping modRestoreVolume.ps1 script" >> $LogFile
-	#}
+	}else{
+		echo "$(czas)  Cant finf lock file. C:\Windows\Temp\netappStorage1.loc. Skipping modRestoreVolume.ps1 script" >> $LogFile
+	}
 echo "$(czas)  End of modRestoreVolume.ps1 script" >> $LogFile

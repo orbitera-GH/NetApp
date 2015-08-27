@@ -10,9 +10,23 @@
 #
 #############################################################################
 
+
+#
+#	Production
+#
+#	Production
+#
+#	Production
+#
+######################################################
+
 $SqlServerName = ($env:computername).ToLower()
 $LogFile = "C:\Windows\Panther\netappStorageRestoreVolume.log"
 $PermissionFile = "C:\Windows\Panther\AllowToDisconnectStorage.yes"
+$SupervisorIP = Get-Content -Path "c:\Windows\OEM\SuperVisorIP.txt"
+$debug="&debug=true"
+$vmName=($env:computername).ToLower()
+
 function czas {$a="$((get-date -Format yyyy-MM-dd_HH:mm:ss).ToString())"; return $a}
 
 #date >> $LogFile
@@ -195,8 +209,17 @@ echo "$(czas)  Starting script modRestoreVolume.ps1..." >> $LogFile
 			
 
 			 PostEvent "Removed Lun Mapping" "Information"
-
-			 exit 1
+				$resp=""
+				$resp=(new-object net.webclient).DownloadString('http://'+$SupervisorIP+'/releasevnet.php?name='+$vmName + $debug)
+				$Length = $resp.Length
+			if ($Length -ge 2) {
+				echo "$(czas)  Supervisor releasevnet.php respond string: $resp." >> $LogFile
+				echo "$(czas)  resp length: $($resp.Length)" >> $LogFile
+			}else{		
+				echo "$(czas)  Supervisor releasevnet.php not respond OK but: $resp." >> $LogFile
+				echo "$(czas)  resp length: $($resp.Length)" >> $LogFile
+			}
+				exit 1
 
 			#end try
 		}

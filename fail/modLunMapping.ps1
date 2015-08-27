@@ -1,21 +1,29 @@
 ﻿
 ###########################################################################
 # 
-# Script to connect to SVM from SQL Virtual Machine
+# Script to Map Luns to the Windows Host
 #
 # Author - Mudassar Shafique
-# Version - 1.2
-# Last Modified 08/07/2015
+# Version - 1.1
+# Last Modified 08/04/2015
 #
 #############################################################################
 
+#
+#	Production
+#
+#	Production
+#
+#	Production
+#
+######################################################
 
-#set these variables per the storage virtual machine
+#Global variables to be set per the storage virtual machine setting
 
 $SqlServerName = ($env:computername).ToLower()
-$LogFile = "C:\Windows\Panther\netappStorageConnectToStorage.log"
+$LogFile = "C:\Windows\Panther\netappStorageLunMapping.log"
 date >> $LogFile
-echo "modConnectToStorage start..." >> $LogFile
+echo "modLunMapping start..." >> $LogFile
 switch -wildcard ($SqlServerName) { 
 		"*01" {
 			$mgmtLIF = "192.168.250.2"
@@ -100,25 +108,25 @@ switch -wildcard ($SqlServerName) {
 		default {date >> $LogFile ; echo "### ERROR can't determine management LIF IP address for VMname: $SqlServerName"  >> $LogFile}
 	}
 
-
 #$dataLIF1 = "192.168.250.36"
 #$dataLIF2 = "192.168.250.37"
 #$mgmtLIF = "192.168.250.34"
 #$server = "server142"
+#$sqlserver = "sqltestdrive03b"
+
 
 $verbose = $true #for debugging
+
 $secpasswd = ConvertTo-SecureString "Orbitera123!" -AsPlainText -Force
-$svmcreds = New-Object System.Management.Automation.PSCredential ("vsadmin", $secpasswd)
-
-
-#Logging function
+$svmcreds = New-Object System.Management.Automation.PSCredential ("vsadmin", $secpasswd)			   
+Import-Module DataOnTap   
+connect-nccontroller $mgmtLIF -cred $svmcreds
 function PostEvent([String]$TextField, [string]$EventType)
 	{	# Subroutine to Post Events to Log/Screen/EventLog
 		$outfile = "C:\TestDriveSetup\netapp.log"
-        $outdir = "C:\TestDriveSetup"
         $LogTime = Get-Date -Format "MM-dd-yyyy_hh-mm-ss"
         	
-		if (! (test-path $outdir))
+		if (! (test-path $OUTFILE))
 		{	
             $suppress = mkdir C:\TestDriveSetup
 		}
@@ -146,75 +154,43 @@ function PostEvent([String]$TextField, [string]$EventType)
 	}	
 
 
-function CheckService([String]$ServiceName)
-{
-    
-    $arrService = Get-Service -Name $ServiceName
-    if ($arrService.Status -ne "Running"){
-        Start-Service $ServiceName
-        PostEvent "Starting  $ServiceName  service" "Information"
-    }
-    if ($arrService.Status -eq "running"){ 
-        PostEvent "$ServiceName service is already started" "Information"
-    }
-}
-
 
 try
 {
-    PostEvent "Starting ConnectToStorageVM Script" "Information"
+    PostEvent "Starting LunMapping Script" "Information"
+    PostEvent "Mapping Luns on the Server" "Information"
 
-    CheckService("MSiSCSI")
+    add-nclunmap /vol/sql_data/data_lun_001 $server
+    add-nclunmap /vol/sql_log/log_lun_001 $server
+    add-nclunmap /vol/sql_snapinfo/snapinfo_lun_001 $server
 
-    #Initiator IQN
-    $vmiqn = (get-initiatorPort).nodeaddress
 
-    Import-Module DataOnTap
+    Start-NcHostDiskRescan; Wait-NcHostDisk  -SettlingTime 5000
+    #Start-NcHostDiskRescan; Wait-NcHostDisk  -SettlingTime 5000
+    #Start-NcHostDiskRescan; Wait-NcHostDisk  -SettlingTime 5000
 
-    connect-nccontroller $mgmtLIF -cred $svmcreds
-    $iGroupList = Get-ncigroup
-    $iGroupSetup = $False
+    PostEvent "Disk Scan finished" "Information"
 
-    #Find if iGroup is already setup, add if not 
-    foreach($igroup in $iGroupList)
-    {
-        if ($igroup.Name -eq $server)   
-        {
-            foreach($initiator in $igroup.Initiators)
-            {
-                if($initiator.InitiatorName.Equals($vmiqn))
-                {
-                    $iGroupSetup = $True
-                    PostEvent "Found $server iGroup is alerady setup on SvM with IQN: $vmiqn" "Information"
-                    break
-                }
-            }
-        }
-    }
-    if($iGroupSetup -eq $False)
-    {
-    
-        if ((get-nciscsiservice).IsAvailable -ne "True") { Add-NcIscsiService }    
-        new-ncigroup -name $server -Protocol iScSi -Type Windows    
-        Add-NcIgroupInitiator -name $server -Initiator $vmiqn
-        PostEvent "Setting up $server iGroup on SvM" "Information"
-    }
 
-    New-IscsiTargetPortal -TargetPortalAddress $dataLIF1
-    $Tar = get-iscsitarget
-    connect-iscsitarget -NodeAddress $Tar.NodeAddress -IsMultiPathEnabled $True  -TargetPortalAddress $dataLIF1
-    connect-iscsitarget -NodeAddress $Tar.NodeAddress -IsMultiPathEnabled $True  -TargetPortalAddress $dataLIF2
+    $DataDisk = (get-nchostdisk | Where-Object {$_.ControllerPath -like "*sql_data*"}).Disk
+    $LogDisk = (get-nchostdisk | Where-Object {$_.ControllerPath -like "*sql_log*"}).Disk
+    $SnapInfoDisk = (get-nchostdisk | Where-Object {$_.ControllerPath -like "*sql_snapinfo*"}).Disk
 
-    PostEvent "ConnectToStorageVM Script finished" "Information"
+    if (!(test-path "G:" )) { Add-PartitionAccessPath -DiskNumber $DataDisk -AccessPath G: -PartitionNumber 2 }
+    if (!(test-path "H:" )) { Add-PartitionAccessPath -DiskNumber $LogDisk -AccessPath H: -PartitionNumber 2 }
+    if (!(test-path "I:" )) { Add-PartitionAccessPath -DiskNumber $SnapInfoDisk -AccessPath I: -PartitionNumber 2 }
+
+    PostEvent "Assigned Drive Letters" "Information"
+
+
+    PostEvent "Finished LunMapping " "Information"
+
     exit 1
-
 }
 catch
 {
-     PostEvent "Error in ConnectToStorageVM Script" "Error"
-     PostEvent $_.exception "Error"
-     exit 0
+    PostEvent $_.exception "Error"
+    
+    exit 0
 }
-
-
-
+		   

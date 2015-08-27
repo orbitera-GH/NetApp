@@ -1,5 +1,12 @@
 # Main script running via host.ps1 on sql's machines
-
+#
+#	Production
+#
+#	Production
+#
+#	Production
+#
+######################################################
 $vmName=($env:computername).ToLower()
 $PlainPassword = "Qwerty12"
  $SecurePassword = (ConvertTo-SecureString $PlainPassword -AsPlainText -Force) 
@@ -45,6 +52,7 @@ download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConfigu
 download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConfigureSnapManager.ps1" "c:\Windows\OEM\modConfigureSnapManager.ps1"
 download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/ALLInOne.ps1" "c:\Windows\OEM\ALLInOne.ps1"
 download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/makeuser.cmd" "c:\Windows\OEM\makeuser.cmd"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/SuperVisorIP.txt" "c:\Windows\OEM\SuperVisorIP.txt"
 
 ## download end
 
@@ -139,7 +147,10 @@ Set-DNSClientServerAddress –InterfaceIndex $nicIndex -ServerAddresses $domainCon
 # Change Netapp Servicess password
 function changeNetappServicePassword ([string]$NetappServiceName, [string]$NetappServicePassword) {
 	echo "$(czas) Start working with $NetappServiceName" >> $log
+	$NetappServiceName
+	$NetappServicePassword
 	$Service = gwmi win32_service -Filter "name='$NetappServiceName'"
+	$Service
 	$Service.StopService()
 	start-sleep -s 2
 	echo "$(czas) Status service $NetappServiceName is: $($service.State)" >> $log
@@ -150,6 +161,7 @@ function changeNetappServicePassword ([string]$NetappServiceName, [string]$Netap
 	echo "$(czas) Status service $NetappServiceName is: $ServiceStatus" >> $log
 	echo "$(czas) End working with $NetappServiceName" >> $log
 }
+
 
 changeNetappServicePassword "Navssprv" $NetappServicePassword
 changeNetappServicePassword "SWSvc" $NetappServicePassword
@@ -175,6 +187,8 @@ function changeSQLservice ([string]$NetappServiceUser, [string]$NetappServicePas
 
 changeSQLservice $NetappServiceUser $NetappServicePassword
 
+echo "$(czas)  Change SQL Servicess password END" >> $log
+
 echo "$(czas)  Disable ServerManager" >> $log
 $serverManagerProcess = Get-Process | where {$_.name -like "ServerManager"}
 If ($($serverManagerProcess.Id)) {
@@ -192,7 +206,6 @@ If ($($serverManagerProcess.Id)) {
 	echo "$(czas) not found ServerManager process." >> $log
 }
 echo "$(czas)  Disable ServerManager END" >> $log
-
 
  Import-Module ServerManager -ErrorAction SilentlyContinue
  Import-Module ADDSDeployment -ErrorAction SilentlyContinue

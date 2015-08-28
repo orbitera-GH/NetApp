@@ -61,6 +61,16 @@ copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapManager fo
 copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapManager for SQL Server Management Console.lnk" "C:\Users\Public\Desktop\SnapManager for SQL Server Management Console.lnk"
 copy "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\NetApp\SnapDrive.lnk" "C:\Users\Public\Desktop\SnapDrive.lnk"
 
+# make partition F
+echo "$(czas)  Start resize disk D" >> $log
+Resize-Partition -DriveLetter D -Size 380GB >> $log
+echo "$(czas)  END resize disk D" >> $log
+echo "$(czas)  Start create partition F" >> $log
+New-Partition -DiskNumber 1 -UseMaximumSize -DriveLetter F >> $log
+echo "$(czas)  END create partition F" >> $log
+# make partition F END
+
+
 ## controller.txt (file on sql desktop)
 echo "$(czas)  start assemble controller.txt" >> $log
 switch -wildcard ($vmName) { 

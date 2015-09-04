@@ -117,7 +117,7 @@ switch -wildcard ($vmName) {
 		default {echo "$(czas) ### ERROR can't determine aztestdrive network name for VMname: $vmName"  >> $LogFile}
 	}
 Write-Output "NetApp Storage Controller: $vnetNameForConntrollerFile" | Out-File -FilePath C:\Users\Public\Desktop\controller.txt -Append
-Write-Output "UserName: VSAdmin" | Out-File -FilePath C:\Users\Public\Desktop\controller.txt -Append
+Write-Output "UserName: vsadmin" | Out-File -FilePath C:\Users\Public\Desktop\controller.txt -Append
 Write-Output "Password: Orbitera123!" | Out-File -FilePath C:\Users\Public\Desktop\controller.txt -Append
 echo "$(czas)  stop assemble controller.txt" >> $log
 ## controller.txt stop

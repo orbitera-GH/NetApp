@@ -14,7 +14,7 @@ function czas {$a="$((get-date -Format yyyy-MM-dd_HH:mm:ss).ToString())"; return
 
 $SqlServerName = ($env:computername).ToLower()
 $LogFile = "C:\Windows\Panther\netappStorageConnectToStorage.log"
-
+$LogFileLunMapping = "C:\Windows\Panther\netappLunMapping.log"
 echo "$(czas) modConnectToStorage start..." >> $LogFile
 switch -wildcard ($SqlServerName) { 
 		"*01" {
@@ -371,12 +371,16 @@ try
     PostEvent "Starting LunMapping Script" "Information"
     PostEvent "Mapping Luns on the Server" "Information"
 
-    add-nclunmap /vol/sql_data/data_lun_001 $server
-    add-nclunmap /vol/sql_log/log_lun_001 $server
-    add-nclunmap /vol/sql_snapinfo/snapinfo_lun_001 $server
+    add-nclunmap /vol/sql_data/data_lun_001 $server >> $LogFileLunMapping
+		#harnas
+		Start-NcHostDiskRescan >> $LogFileLunMapping ; Wait-NcHostDisk  -SettlingTime 5000 >> $LogFileLunMapping
+    add-nclunmap /vol/sql_log/log_lun_001 $server >> $LogFileLunMapping
+		#harnas
+		Start-NcHostDiskRescan >> $LogFileLunMapping ; Wait-NcHostDisk  -SettlingTime 5000 >> $LogFileLunMapping
+    add-nclunmap /vol/sql_snapinfo/snapinfo_lun_001 $server >> $LogFileLunMapping
 
 
-    Start-NcHostDiskRescan; Wait-NcHostDisk  -SettlingTime 5000
+    Start-NcHostDiskRescan >> $LogFileLunMapping ; Wait-NcHostDisk  -SettlingTime 5000 >> $LogFileLunMapping
     #Start-NcHostDiskRescan; Wait-NcHostDisk  -SettlingTime 5000
     #Start-NcHostDiskRescan; Wait-NcHostDisk  -SettlingTime 5000
 
@@ -386,7 +390,10 @@ try
     $DataDisk = (get-nchostdisk | Where-Object {$_.ControllerPath -like "*sql_data*"}).Disk
     $LogDisk = (get-nchostdisk | Where-Object {$_.ControllerPath -like "*sql_log*"}).Disk
     $SnapInfoDisk = (get-nchostdisk | Where-Object {$_.ControllerPath -like "*sql_snapinfo*"}).Disk
-
+	echo "Variable DataDisk: $DataDisk"	>> $LogFileLunMapping
+	echo "Variable LogDisk: $LogDisk"	>> $LogFileLunMapping
+	echo "Variable SnapInfoDisk: $SnapInfoDisk"	>> $LogFileLunMapping
+	
     if (!(test-path "G:" )) { Add-PartitionAccessPath -DiskNumber $DataDisk -AccessPath G: -PartitionNumber 2 }
     if (!(test-path "H:" )) { Add-PartitionAccessPath -DiskNumber $LogDisk -AccessPath H: -PartitionNumber 2 }
     if (!(test-path "I:" )) { Add-PartitionAccessPath -DiskNumber $SnapInfoDisk -AccessPath I: -PartitionNumber 2 }
@@ -439,11 +446,21 @@ $driveList=Get-PSDrive -PSProvider FileSystem | select root -ExpandProperty root
 			$logFilePatch=$drive+"Adventureworks_log.ldf"
 			if (test-path $dataFilePatch) {
 				$datastr=$dataFilePatch
-				echo "$(czas) Database Patch: $datastr" >> $LogFile
+				echo "$(czas) Database Path: $datastr" >> $LogFile
+				if ($dataFilePatch -ne "G:\Adventureworks.mdf") {
+					echo "$(czas) Database Path mismatch detected." >> $LogFile
+				}else{
+					echo "$(czas) Database Path is correct." >> $LogFile
+				}
 			}
 			if (test-path $logFilePatch) {
 				$logstr=$logFilePatch
-				echo "$(czas) Log Patch: $logstr" >> $LogFile
+				echo "$(czas) Log Path: $logstr" >> $LogFile
+				if ($dataFilePatch -ne "H:\Adventureworks_log.ldf") {
+					echo "$(czas) Log Path mismatch detected." >> $LogFile
+				}else{
+					echo "$(czas) Log Path is correct." >> $LogFile
+				}
 			}
 		}
 	}
@@ -738,7 +755,7 @@ catch
 $SMSQLConfig = "C:\Windows\OEM\SMSQLConfig.xml"
 #$sqlserver = "sqltestdrive03b"
 $sqlserver = ($env:computername).ToLower()
-
+$SnapManagerOutput="c:\windows\Panther\SnapManagerOutput.txt"
 $verbose = $true #for debugging
 
 
@@ -780,22 +797,24 @@ function PostEvent([String]$TextField, [string]$EventType)
 
 try{
     PostEvent "Starting ConfigureSnapManager Script" "Information"
-
+	echo "$(czas) Start configure snapManager" >> $SnapManagerOutput
     # Update the config file
     (gc $SMSQLConfig).replace('WINSQL', $sqlserver) | sc $SMSQLConfig
 
     # Load SnapManager for SQL PowerShell Snap In
-    Add-PSSnapin -Name NetApp.SnapManager.SQL.PS.Admin
+    Add-PSSnapin -Name NetApp.SnapManager.SQL.PS.Admin >> $SnapManagerOutput
 
-    import-config -Server $sqlserver -ControlFilePath $SMSQLConfig -ValidateAndApply
+    import-config -Server $sqlserver -ControlFilePath $SMSQLConfig -ValidateAndApply  >> $SnapManagerOutput
 
     PostEvent "Imported SnapManager configuration" "Information"
     #exit 1
+	echo "$(czas) END configure snapManager" >> $SnapManagerOutput
 }
 catch
 {
     PostEvent "Error in ConfigureSnapManager Script" "Error"
     PostEvent $_.exception "Error"
+	echo "$(czas) kiepsciutko in the configure snapManager script" >> $SnapManagerOutput
     #exit 0
 }
 

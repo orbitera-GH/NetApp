@@ -1,11 +1,11 @@
 # init script located on DC machines and distributed via GPO
 
 #
-#	Production
+#	DEVEL
 #
-#	Production
+#	DEVEL
 #
-#	Production
+#	DEVEL
 #
 ######################################################
 

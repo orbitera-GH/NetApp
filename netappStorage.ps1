@@ -1,16 +1,13 @@
 # Mount NetApp storage and repair DNS settings past shutdown VM
-#
-#
-# Production
-#
-# Production
+
 
 $LogFile = "C:\Windows\Panther\netappStorage.log"
 $LogFile1 = "C:\Windows\Panther\netappStorageScripts.log"
+$LogFile2 = "C:\Windows\Panther\netappStorageScriptsRelease.log"
 $SupervisorIP = Get-Content -Path "c:\Windows\OEM\SuperVisorIP.txt"
 $supervisorDnsName = "supervisor1.testdrivesupervisor.eastus.cloudapp.azure.com"
 #$supervisorIP="23.96.43.23"
-$debug="&debug=true"
+$debug="&debug="
 function czas {$a="$((get-date -Format yyyy-MM-dd_HH:mm:ss).ToString())"; return $a}
 
 $vmName=($env:computername).ToLower()
@@ -70,14 +67,32 @@ $l=0
 			$resp=""
 			$resp=(new-object net.webclient).DownloadString('http://'+$SupervisorIP+'/sqlinstall.php?name='+$vmName + $debug)
 			$Length = $resp.Length
-			if ($Length -ge 2) {
-				echo "$(czas)  Supervisor sqlinstall.php respond string: $resp." >> $LogFile
-				echo "$(czas)  resp length: $($resp.Length)" >> $LogFile
-			}else{		
-				echo "$(czas)  Supervisor sqlinstall.php not respond OK but: $resp." >> $LogFile
-				echo "$(czas)  resp length: $($resp.Length)" >> $LogFile
-			}
+				if ($Length -ge 2) {
+					echo "$(czas)  Supervisor sqlinstall.php respond string: $resp." >> $LogFile
+					echo "$(czas)  resp length: $($resp.Length)" >> $LogFile
+				}else{		
+					echo "$(czas)  Supervisor sqlinstall.php not respond OK but: $resp." >> $LogFile
+					echo "$(czas)  resp length: $($resp.Length)" >> $LogFile
+				}
+				$checkstatus=""
+				$step=0
+				While ($checkstatus -ne "ReleaseStorage") {
+					# waiting for ReleaseStorage response from supervisor
+					$checkstatus=(new-object net.webclient).DownloadString('http://'+$SupervisorIP+'/checkstatus.php?name='+$vmName + $debug)
+					echo "$(czas) Supervisor checkstatus.php respond string: $checkstatus" >> $LogFile2
+					echo "$(czas) checkstatus length: $($checkstatus.Length)" >> $LogFile2
+					start-sleep -s 2
+					$step++
+					echo "$(czas) loop step: $step" >> $LogFile2
+				}
+				if ($checkstatus -eq "ReleaseStorage") {
+					echo "$(czas) End loop, response from supervisor: $checkstatus" >> $LogFile2
+					C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -WindowStyle Minimized -command start-process powershell  -WindowStyle Minimized -Wait  -Verb runAs -argumentlist 'C:\Windows\OEM\modRestoreVolume.ps1' >> $LogFile2
+				}else{
+					echo "$(czas) !! ERROR !! End loop, waiting but supervisor NOT respond ReleaseStorage but: $checkstatus" >> $LogFile2
+				}
 		}else{
+			#after restart, probably never happened
 			#date >> $LogFile
 			echo "$(czas)  Lock - detected. C:\Windows\Temp\netappStorage.loc" >> $LogFile
 			echo "$(czas)  Lock 2." >> C:\Windows\Temp\netappStorage1.loc

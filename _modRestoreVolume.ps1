@@ -12,16 +12,16 @@
 
 
 #
-#	DEVEL
+#	Production
 #
-#	DEVEL
+#	Production
 #
-#	DEVEL
+#	Production
 #
 ######################################################
 
 $SqlServerName = ($env:computername).ToLower()
-$LogFile = "C:\Windows\Panther\netappStorageScriptsRelease.log"
+$LogFile = "C:\Windows\Panther\netappStorageRestoreVolume.log"
 $PermissionFile = "C:\Windows\Panther\AllowToDisconnectStorage.yes"
 $SupervisorIP = Get-Content -Path "c:\Windows\OEM\SuperVisorIP.txt"
 $debug="&debug=true"
@@ -38,61 +38,61 @@ echo "$(czas)  Starting script modRestoreVolume.ps1..." >> $LogFile
 			switch -wildcard ($SqlServerName) { 
 					"*01" {
 						$mgmtLIF = "192.168.250.2"
-						$server = "server140"
+						$server = "Server140"
 						#date >> $LogFile
 						echo "$(czas)  Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 					}
 					"*02" {
 						$mgmtLIF = "192.168.250.18"
-						$server = "server141"
+						$server = "Server141"
 						#date >> $LogFile
 						echo "$(czas)  Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 					} 
 					"*03" {
 						$mgmtLIF = "192.168.250.34"
-						$server = "server142"
+						$server = "Server142"
 						#date >> $LogFile
 						echo "$(czas)  Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 					}
 					"*04" {
 						$mgmtLIF = "192.168.250.50"
-						$server = "server143"
+						$server = "Server143"
 						#date >> $LogFile
 						echo "$(czas)  Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 					}
 					"*05" {
 						$mgmtLIF = "192.168.250.66"
-						$server = "server144"
+						$server = "Server144"
 						#date >> $LogFile
 						echo "$(czas)  Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 					}
 					"*06" {
 						$mgmtLIF = "192.168.250.82"
-						$server = "server145"
+						$server = "Server145"
 						#date >> $LogFile
 						echo "$(czas)  Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 					}
 					"*07" {
 						$mgmtLIF = "192.168.250.98"
-						$server = "server146"
+						$server = "Server146"
 						#date >> $LogFile
 						echo "$(czas)  Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 					}
 					"*08" {
 						$mgmtLIF = "192.168.250.114"
-						$server = "server147"
+						$server = "Server147"
 						#date >> $LogFile
 						echo "$(czas)  Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 					}
 					"*09" {
 						$mgmtLIF = "192.168.250.130"
-						$server = "server148"
+						$server = "Server148"
 						#date >> $LogFile
 						echo "$(czas)  Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 					}
 					"*10" {
 						$mgmtLIF = "192.168.250.146"
-						$server = "server149"
+						$server = "Server149"
 						#date >> $LogFile
 						echo "$(czas)  Hostname is $SqlServerName, mgmtLIF: $mgmtLIF , dataLIF1: $dataLIF1 , dataLIF2: $dataLIF2" >> $LogFile
 					}
@@ -209,15 +209,15 @@ echo "$(czas)  Starting script modRestoreVolume.ps1..." >> $LogFile
 			
 
 			 PostEvent "Removed Lun Mapping" "Information"
-				$releasevent=""
-				$releasevent=(new-object net.webclient).DownloadString('http://'+$SupervisorIP+'/releasevnet.php?name='+$vmName + $debug)
-				$Length = $releasevent.Length
+				$resp=""
+				$resp=(new-object net.webclient).DownloadString('http://'+$SupervisorIP+'/releasevnet.php?name='+$vmName + $debug)
+				$Length = $resp.Length
 			if ($Length -ge 2) {
-				echo "$(czas)  Supervisor releasevnet.php respond string: $releasevent" >> $LogFile
-				echo "$(czas)  releasevent length: $($releasevent.Length)" >> $LogFile
+				echo "$(czas)  Supervisor releasevnet.php respond string: $resp." >> $LogFile
+				echo "$(czas)  resp length: $($resp.Length)" >> $LogFile
 			}else{		
-				echo "$(czas)  Supervisor releasevnet.php not respond OK but: $releasevent" >> $LogFile
-				echo "$(czas)  releasevent length: $($releasevent.Length)" >> $LogFile
+				echo "$(czas)  Supervisor releasevnet.php not respond OK but: $resp." >> $LogFile
+				echo "$(czas)  resp length: $($resp.Length)" >> $LogFile
 			}
 				exit 1
 
@@ -226,8 +226,7 @@ echo "$(czas)  Starting script modRestoreVolume.ps1..." >> $LogFile
 		catch
 		{
 			PostEvent $_.exception "Error"
-			(new-object net.webclient).DownloadString('http://'+$SupervisorIP+'/BladPodczasRestoreVolume.php?name='+$vmName + $debug)
-            echo "$(czas) error catch section... " >> $LogFile
+			
 			exit 0
 			#end catch
 		}

@@ -42,17 +42,17 @@ Function download ([string]$source,[string]$destination) {
 	}
 }
 
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/netappStorage.ps1" "c:\Windows\OEM\netappStorage.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modAttachSQLDatabase.ps1" "c:\Windows\OEM\modAttachSQLDatabase.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modConnectToStorageVM.ps1" "c:\Windows\OEM\modConnectToStorageVM.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modLunMapping.ps1" "c:\Windows\OEM\modLunMapping.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modRestoreVolume.ps1" "c:\Windows\OEM\modRestoreVolume.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/SMSQLConfig.xml" "c:\Windows\OEM\SMSQLConfig.xml"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modConfigureSnapDrive.ps1" "c:\Windows\OEM\modConfigureSnapDrive.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/modConfigureSnapManager.ps1" "c:\Windows\OEM\modConfigureSnapManager.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/ALLInOne.ps1" "c:\Windows\OEM\ALLInOne.ps1"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/makeuser.cmd" "c:\Windows\OEM\makeuser.cmd"
-download "https://raw.githubusercontent.com/orbitera-GH/NetAppDEVEL/master/SuperVisorIP.txt" "c:\Windows\OEM\SuperVisorIP.txt"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/netappStorage.ps1" "c:\Windows\OEM\netappStorage.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modAttachSQLDatabase.ps1" "c:\Windows\OEM\modAttachSQLDatabase.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConnectToStorageVM.ps1" "c:\Windows\OEM\modConnectToStorageVM.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modLunMapping.ps1" "c:\Windows\OEM\modLunMapping.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modRestoreVolume.ps1" "c:\Windows\OEM\modRestoreVolume.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/SMSQLConfig.xml" "c:\Windows\OEM\SMSQLConfig.xml"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConfigureSnapDrive.ps1" "c:\Windows\OEM\modConfigureSnapDrive.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/modConfigureSnapManager.ps1" "c:\Windows\OEM\modConfigureSnapManager.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/ALLInOne.ps1" "c:\Windows\OEM\ALLInOne.ps1"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/makeuser.cmd" "c:\Windows\OEM\makeuser.cmd"
+download "https://raw.githubusercontent.com/orbitera-GH/NetApp/master/SuperVisorIP.txt" "c:\Windows\OEM\SuperVisorIP.txt"
 
 ## download end
 
